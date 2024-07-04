@@ -12,7 +12,7 @@ import {
 } from "./ui/dropdown-menu.tsx";
 import {Button} from "./ui/button.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "./ui/avatar.tsx";
-import {CreditCard, LogOut, Scroll, ShoppingCart, Trash2, User} from "lucide-react";
+import {CircleAlertIcon, CircleCheckIcon, CreditCard, LogOut, Scroll, ShoppingCart, Trash2, User} from "lucide-react";
 import {Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "./ui/sheet.tsx";
 import PizzaInBasketCard from "./PizzaInBasketCard.tsx";
 import PizzaModel from "../models/PizzaModel.tsx";
@@ -21,6 +21,8 @@ import BasketAPI from "../apis/BasketAPI.tsx";
 import {useEffect, useState} from "react";
 import StorageAPI from "../apis/StorageAPI.tsx";
 import React from "react";
+import OrderAPI from "../apis/OrderAPI.tsx";
+import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "./ui/dialog.tsx";
 
 interface NavbarProps {
     loggedInUser: UserModel | undefined;
@@ -32,6 +34,8 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
     const navigate = useNavigate();
 
     const [basket, setBasket] = useState<BasketModel | undefined>(loggedInUserBasket);
+    const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         if (loggedInUserBasket) {
@@ -43,8 +47,15 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
         if (loggedInUser != undefined && accessToken != null) {
-            const response = await BasketAPI.removePizzaFromUserBasket(loggedInUser.userId, pizzaId, accessToken);
-            setBasket(response.data.basketDTO);
+            try {
+                const response = await BasketAPI.removePizzaFromUserBasket(loggedInUser.userId, pizzaId, accessToken);
+                setBasket(response.data.basketDTO);
+            }
+
+            catch (error) {
+                console.log(error);
+                setError(true);
+            }
         }
     }
 
@@ -52,8 +63,21 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
         if (loggedInUser != undefined && accessToken != null) {
-            //const response = await OrderAPI.placeOrderByUsersBasket(loggedInUser.userId, accessToken);
-            //navigate("/orders");
+            try {
+                const response = await OrderAPI.placeOrderByUsersBasket(loggedInUser.userId, accessToken);
+                setIsOrderPlaced(true);
+
+                // @ts-ignore
+                setBasket((prevBasket) => ({
+                    ...prevBasket,
+                    pizzas: [] as PizzaModel[],
+                }));
+            }
+
+            catch (error) {
+                console.log(error);
+                setError(true);
+            }
         }
     }
 
@@ -70,6 +94,47 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
 
     return (
         <>
+            {isOrderPlaced &&
+                <>
+                    <Dialog defaultOpen={true}>
+                        <DialogTitle />
+                        <DialogTrigger asChild>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
+                            <div className="flex flex-col items-center justify-center gap-4 py-8">
+                                <CircleCheckIcon className="size-12 text-green-500" />
+                                <div className="grid gap-2 text-center">
+                                    <h3 className="text-2xl font-bold">Order placed</h3>
+                                    <p className="text-muted-foreground">Your order has been placed successfully!</p>
+                                    <Link to="/orders">
+                                        <Button>See your orders</Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </>
+            }
+
+            {error &&
+                <>
+                <Dialog defaultOpen={true}>
+                    <DialogTitle />
+                    <DialogTrigger asChild>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
+                        <div className="flex flex-col items-center justify-center gap-4 py-8">
+                            <CircleAlertIcon className="size-12 text-red-500" />
+                            <div className="grid gap-2 text-center">
+                                <h3 className="text-2xl font-bold">Error</h3>
+                                <p className="text-muted-foreground">An unexpected error has occurred, please try again later.</p>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+                </>
+            }
+
             <nav className="flex justify-between items-center py-3 px-2 bg-primary">
 
                 {/* Logo */}

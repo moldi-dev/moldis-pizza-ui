@@ -34,22 +34,14 @@ const PizzasPage = () => {
         }
 
         async function fetchUserImage() {
-            if (loggedInUser != null) {
-                const response = await ImageAPI.findByUserId(loggedInUser.userId);
-                setLoggedInUserProfilePicture(response.data.base64EncodedImage);
-            }
+            // @ts-ignore
+            const response = await ImageAPI.findByUserId(loggedInUser.userId);
+            setLoggedInUserProfilePicture(response.data.base64EncodedImage);
         }
 
         async function fetchUserBasket() {
             const response = await BasketAPI.findLoggedInUserBasket();
             setLoggedInUserBasket(response);
-        }
-
-        async function fetchPizzas() {
-            const response = await PizzaAPI.findAll(page, 4);
-
-            setNumberOfPages(response.data.pizzasDTOs.totalPages);
-            setPizzas(response.data.pizzasDTOs.content);
         }
 
         fetchUser();

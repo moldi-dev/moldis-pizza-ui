@@ -30,9 +30,9 @@ async function findById(id: number, accessToken: string) {
     }
 }
 
-async function findAllByUserId(id: number, accessToken: string) {
+async function findAllByUserId(id: number, page: number, size: number, accessToken: string) {
     try {
-        const url = `http://localhost:8080/api/v1/orders/user-id=${id}`;
+        const url = `http://localhost:8080/api/v1/orders/user-id=${id}?page=${page}&size=${size}`;
         const response = await axios.get(url, {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
@@ -58,12 +58,12 @@ async function placeOrderByUsersBasket(id: number, accessToken: string) {
     }
 }
 
-async function findLoggedInUserOrders() {
-    const accessToken = StorageAPI.getAccessTokenFromLocalStorage();
+async function findLoggedInUserOrders(page: number, size: number) {
+    const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
     const loggedInUser = await UserAPI.findLoggedInUser();
 
     try {
-        const url = `http://localhost:8080/api/v1/orders/user-id=${loggedInUser.userId}`;
+        const url = `http://localhost:8080/api/v1/orders/user-id=${loggedInUser.userId}?page=${page}&size=${size}`;
         const response = await axios.get(url, {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
@@ -75,4 +75,4 @@ async function findLoggedInUserOrders() {
     }
 }
 
-export default { findAll, findById, findAllByUserId, placeOrderByUsersBasket };
+export default { findAll, findById, findAllByUserId, placeOrderByUsersBasket, findLoggedInUserOrders };

@@ -1,12 +1,12 @@
+import React, {useEffect, useState} from 'react';
 import PizzaModel from "../models/PizzaModel.tsx";
-import React, {useEffect, useState} from "react";
 import ImageAPI from "../apis/ImageAPI.tsx";
 
-interface PizzaCardProps {
+interface PizzaOrderItemProps {
     pizza: PizzaModel;
 }
 
-const PizzaInBasketCard: React.FC<PizzaCardProps> = ({ pizza }) => {
+const PizzaOrderItem: React.FC<PizzaOrderItemProps> = ({ pizza }) => {
     const [pizzaImage, setPizzaImage] = useState<string>();
 
     useEffect(() => {
@@ -25,15 +25,15 @@ const PizzaInBasketCard: React.FC<PizzaCardProps> = ({ pizza }) => {
 
     return (
         <>
-            {pizzaImage != undefined &&
-                <img src={`data:image/jpeg;base64,${pizzaImage}`} width="200px" height="200px" alt="pizza image"
-                     className="object-cover"/>
-            }
-            <p className="pt-2">{pizza.name}</p>
-            <p className="pt-2">{pizza.ingredients}</p>
-            <p className="pt-2">${pizza.price.toFixed(2)}</p>
+            <img src={`data:image/jpeg;base64,${pizzaImage}`} alt="delicious pizza" width={200} height={200}
+                 className="rounded-md"/>
+            <div>
+                <h3 className="font-semibold">{pizza.name}</h3>
+                <p className="text-muted-foreground">{pizza.ingredients}</p>
+                <p className="font-semibold">${pizza.price.toFixed(2)}</p>
+            </div>
         </>
     );
-};
+}
 
-export default PizzaInBasketCard;
+export default PizzaOrderItem;

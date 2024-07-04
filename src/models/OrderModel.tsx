@@ -6,7 +6,7 @@ interface OrderModel {
     user: UserModel,
     pizzas: PizzaModel[],
     totalPrice: number,
-    createdData: Date,
+    createdDate: Date,
     status: string
 }
 
