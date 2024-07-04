@@ -1,14 +1,29 @@
-import { useState } from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {Button} from "./ui/button.tsx";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "./ui/card.tsx";
+import {Input} from "./ui/input.tsx";
+import {Label} from "./ui/label.tsx";
+import {AlertDestructive} from "./ui/alert-destructive.tsx";
+import {Checkbox} from "./ui/checkbox.tsx";
 
 const SignInForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState('false');
     const [errorMessage, setErrorMessage] = useState('');
-
     const navigate = useNavigate();
+
+    const handleCheckboxChange: React.FormEventHandler<HTMLButtonElement> = (e) => {
+        if (rememberMe === 'false') {
+            setRememberMe('true');
+        }
+
+        else if (rememberMe === 'true') {
+            setRememberMe('false');
+        }
+    };
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -35,11 +50,9 @@ const SignInForm = () => {
         }
 
         catch (error) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            if (error.response && error.response.status === 404) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
+            console.log(error);
+
+            if (error.response && (error.response.status === 404 || error.response.status === 401 || error.response.status === 403)) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -49,61 +62,70 @@ const SignInForm = () => {
 
             setTimeout(() => {
                 setErrorMessage('');
-            }, 2500);
+            }, 4000);
         }
     };
 
     return (
-        <div className="container mt-5 d-flex justify-content-center align-items-center">
-            <div className="w-50">
-                <h2 className="mb-4">Sign in</h2>
-                <form onSubmit={handleSubmit}>
+        <>
+            <Card className="mx-auto max-w-sm">
+                <CardHeader>
+                    <CardTitle className="text-2xl text-center">Sign in</CardTitle>
+                    <CardDescription className="text-center">
+                        Enter your username and password below to sign in to your account
+                    </CardDescription>
                     {errorMessage && (
-                        <div className="alert alert-danger" role="alert">
-                            {errorMessage}
-                        </div>
+                        <AlertDestructive description={errorMessage} title="Error" />
                     )}
-                    <div className="mb-3">
-                        <label htmlFor="username" className="form-label">Username</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
+                </CardHeader>
+                <CardContent>
+                    <div className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="username">Username</Label>
+                            <Input
+                                id="username"
+                                type="text"
+                                placeholder="Your username"
+                                onChange={e => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <div className="flex items-center">
+                                <Label htmlFor="password">Password</Label>
+                                <Link to="#" className="ml-auto inline-block text-sm underline">
+                                    Forgot your password?
+                                </Link>
+                            </div>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="Your password"
+                                onChange={e => setPassword(e.target.value)}
+                                required />
+                        </div>
+                        <div className="grid gap-2">
+                            <div className="flex gap-2 items-center">
+                                <Checkbox
+                                    id="rememberMe"
+                                    name="rememberMe"
+                                    onClick={handleCheckboxChange} />
+                                <Label htmlFor="rememberMe">Remember me</Label>
+                            </div>
+                        </div>
+                        <Button type="submit" className="w-full" onClick={handleSubmit}>
+                            Sign in
+                        </Button>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                    <div className="mt-4 text-center text-sm">
+                        Don&apos;t have an account?{" "}
+                        <Link to="/sign-up" className="underline">
+                            Sign up
+                        </Link>
                     </div>
-                    <div className="form-check mb-3">
-                        <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="rememberMe"
-                            checked={rememberMe === 'true'}
-                            onChange={(e) => setRememberMe(e.target.checked ? 'true' : 'false')}
-                        />
-                        <label className="form-check-label" htmlFor="rememberMe">
-                            Remember me
-                        </label>
-                    </div>
-                    <button type="submit" className="btn btn-outline-danger">Sign In</button>
-                    <div className="mb-3" style={{ paddingTop: "10px" }}>
-                        <a href="/sign-up">Don't have an account? Sign up.</a>
-                    </div>
-                </form>
-            </div>
-        </div>
+                </CardContent>
+            </Card>
+        </>
     );
 };
 

@@ -1,4 +1,6 @@
 import axios from "axios";
+import StorageAPI from "./StorageAPI.tsx";
+import UserAPI from "./UserAPI.tsx";
 
 async function findAll(page: number, size: number, accessToken: string) {
     try {
@@ -45,7 +47,24 @@ async function findAllByUserId(id: number, accessToken: string) {
 async function placeOrderByUsersBasket(id: number, accessToken: string) {
     try {
         const url = `http://localhost:8080/api/v1/orders/user-id=${id}`;
-        const response = await axios.post(url, {
+        const response = await axios.post(url, null, {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        return response.data;
+    }
+
+    catch (error) {
+        console.log(error);
+    }
+}
+
+async function findLoggedInUserOrders() {
+    const accessToken = StorageAPI.getAccessTokenFromLocalStorage();
+    const loggedInUser = await UserAPI.findLoggedInUser();
+
+    try {
+        const url = `http://localhost:8080/api/v1/orders/user-id=${loggedInUser.userId}`;
+        const response = await axios.get(url, {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
         return response.data;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {jwtDecode} from "jwt-decode";
+import StorageAPI from "./StorageAPI.tsx";
 
 async function findAll(page: number, size: number, accessToken: string) {
     try {
@@ -60,7 +61,7 @@ async function findByVerificationToken(token: string, accessToken: string) {
 async function setUserImage(userId: number, imageId: number, accessToken: string) {
     try {
         const url = `http://localhost:8080/api/v1/users/set-image/id=${userId}/image-id=${imageId}`;
-        const response = await axios.patch(url, {
+        const response = await axios.patch(url, null, {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
         return response.data;
@@ -85,31 +86,9 @@ async function removeUserImage(id: number, accessToken: string) {
     }
 }
 
-async function getTokensFromLocalStorage() {
-    const accessToken = localStorage.getItem('accessToken') || null;
-    const refreshToken = localStorage.getItem('refreshToken') || null;
-    const rememberMeToken = localStorage.getItem('rememberMeToken') || null;
-
-    return [accessToken, refreshToken, rememberMeToken];
-}
-
 async function findLoggedInUser() {
-    const [accessToken, refreshToken, rememberMeToken] = await getTokensFromLocalStorage();
-
-    let token = null;
+    const token = await StorageAPI.getAccessTokenFromLocalStorage();
     let decodedToken = null;
-
-    if (rememberMeToken != null) {
-        token = rememberMeToken;
-    }
-
-    else if (refreshToken != null) {
-        token = refreshToken;
-    }
-
-    else if (accessToken != null) {
-        token = accessToken;
-    }
 
     if (token != null) {
         decodedToken = jwtDecode(token);
@@ -124,4 +103,4 @@ async function findLoggedInUser() {
     return undefined;
 }
 
-export default { findAll, findById, findByUsername, setUserImage, removeUserImage, findByVerificationToken, findLoggedInUser, getTokensFromLocalStorage };
+export default { findAll, findById, findByUsername, setUserImage, removeUserImage, findByVerificationToken, findLoggedInUser };

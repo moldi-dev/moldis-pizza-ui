@@ -6,6 +6,7 @@ import PizzasPage from "./pages/PizzasPage.tsx";
 function App() {
 
   return (
+      <>
       <BrowserRouter>
           <Routes>
               <Route path="/sign-in" element={<SignInPage />} />
@@ -13,6 +14,7 @@ function App() {
               <Route path="/pizzas" element={<PizzasPage />} />
           </Routes>
       </BrowserRouter>
+      </>
   )
 }
 

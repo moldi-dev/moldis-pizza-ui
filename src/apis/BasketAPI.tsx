@@ -1,6 +1,7 @@
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import UserAPI from "./UserAPI.tsx";
+import StorageAPI from "./StorageAPI.tsx";
 
 async function findAll(page: number, size: number, accessToken: string) {
     try {
@@ -47,7 +48,7 @@ async function findByUserId(id: number, accessToken: string) {
 async function addPizzaToUserBasket(userId: number, pizzaId: number, accessToken: string) {
     try {
         const url = `http://localhost:8080/api/v1/baskets/add-pizza/user-id=${userId}/pizza-id=${pizzaId}`;
-        const response = await axios.patch(url, {
+        const response = await axios.patch(url, null, {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
         return response.data;
@@ -60,8 +61,9 @@ async function addPizzaToUserBasket(userId: number, pizzaId: number, accessToken
 
 async function removePizzaFromUserBasket(userId: number, pizzaId: number, accessToken: string) {
     try {
-        const url = `http://localhost:8080/api/v1/baskets/remove-pizza/user-id${userId}/pizza-id=${pizzaId}`;
-        const response = await axios.patch(url, {
+        const url = `http://localhost:8080/api/v1/baskets/remove-pizza/user-id=${userId}/pizza-id=${pizzaId}`;
+
+        const response = await axios.patch(url, null, {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
         return response.data;
@@ -72,31 +74,9 @@ async function removePizzaFromUserBasket(userId: number, pizzaId: number, access
     }
 }
 
-async function getTokensFromLocalStorage() {
-    const accessToken = localStorage.getItem('accessToken') || null;
-    const refreshToken = localStorage.getItem('refreshToken') || null;
-    const rememberMeToken = localStorage.getItem('rememberMeToken') || null;
-
-    return [accessToken, refreshToken, rememberMeToken];
-}
-
 async function findLoggedInUserBasket() {
-    const [accessToken, refreshToken, rememberMeToken] = await getTokensFromLocalStorage();
-
-    let token = null;
+    const token = await StorageAPI.getAccessTokenFromLocalStorage();
     let decodedToken = null;
-
-    if (rememberMeToken != null) {
-        token = rememberMeToken;
-    }
-
-    else if (refreshToken != null) {
-        token = refreshToken;
-    }
-
-    else if (accessToken != null) {
-        token = accessToken;
-    }
 
     if (token != null) {
         decodedToken = jwtDecode(token);
@@ -113,4 +93,4 @@ async function findLoggedInUserBasket() {
     return undefined;
 }
 
-export default { findAll, findById, findByUserId, addPizzaToUserBasket, removePizzaFromUserBasket, getTokensFromLocalStorage, findLoggedInUserBasket }
+export default { findAll, findById, findByUserId, addPizzaToUserBasket, removePizzaFromUserBasket, findLoggedInUserBasket }

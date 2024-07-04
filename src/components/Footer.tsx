@@ -1,12 +1,8 @@
 const Footer = () => {
     return (
-        <footer className="bg-danger text-white mt-5 p-4 text-center">
+        <footer className="bg-red-500 py-6 text-center text-white">
             <div className="container">
-                <div className="row">
-                    <div className="col">
-                        <p>&copy; {new Date().getFullYear()} Moldi's Pizza. All Rights Reserved.</p>
-                    </div>
-                </div>
+                <p>&copy; Moldi&apos;s Pizza. 2024 All rights reserved.</p>
             </div>
         </footer>
     );
