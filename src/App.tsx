@@ -3,19 +3,21 @@ import SignInPage from "./pages/SignInPage.tsx";
 import SignUpPage from "./pages/SignUpPage.tsx";
 import PizzasPage from "./pages/PizzasPage.tsx";
 import OrdersPage from "./pages/OrdersPage.tsx";
+import ProfilePage from "./pages/ProfilePage.tsx";
 
 function App() {
 
   return (
       <>
-      <BrowserRouter>
-          <Routes>
-              <Route path="/sign-in" element={<SignInPage />} />
-              <Route path="/sign-up" element={<SignUpPage />} />
-              <Route path="/pizzas" element={<PizzasPage />} />
-              <Route path="/orders" element={<OrdersPage />} />
-          </Routes>
-      </BrowserRouter>
+          <BrowserRouter>
+              <Routes>
+                  <Route path="/sign-in" element={<SignInPage />} />
+                  <Route path="/sign-up" element={<SignUpPage />} />
+                  <Route path="/pizzas" element={<PizzasPage />} />
+                  <Route path="/orders" element={<OrdersPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+              </Routes>
+          </BrowserRouter>
       </>
   )
 }

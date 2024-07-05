@@ -8,6 +8,7 @@ import {AlertDestructive} from "./ui/alert-destructive.tsx";
 import axios from "axios";
 import {Alert, AlertDescription, AlertTitle} from "./ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
+import {Textarea} from "./ui/textarea.tsx";
 
 const SignUpForm = () => {
     const [username, setUsername] = useState('');
@@ -49,6 +50,10 @@ const SignUpForm = () => {
 
             else if (error.response && error.response.status == 409) {
                 setErrorMessage(error.response.data.message);
+            }
+
+            else if (error.response) {
+                setErrorMessage('An unexpected error has occurred. Please try again later!');
             }
 
             setTimeout(() => {
@@ -127,9 +132,9 @@ const SignUpForm = () => {
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="address">Address</Label>
-                            <Input
+                            <Textarea
                                 id="address"
-                                type="text"
+                                rows={3}
                                 placeholder="Your address"
                                 onChange={e => setAddress(e.target.value)}
                                 required />

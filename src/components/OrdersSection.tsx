@@ -12,6 +12,7 @@ import {
     PaginationNext,
     PaginationPrevious
 } from "./ui/pagination.tsx";
+import {Badge} from "./ui/badge.tsx";
 
 interface OrdersTableProps {
     loggedInUserOrders: OrderModel[] | undefined;
@@ -44,7 +45,7 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
                             </CardHeader>
                             <CardContent className="p-4">
                                 <div className="mb-4">
-                                    <span className="font-semibold">Status:</span> {order.status}
+                                    <Badge className="font-semibold">{order.status}</Badge>
                                 </div>
                                 <div className="space-y-4">
                                     {order.pizzas.map((pizza, index) => (

@@ -28,25 +28,25 @@ const PizzasPage = () => {
     }
 
     useEffect(() => {
-        async function fetchUser() {
-            const response = await UserAPI.findLoggedInUser();
-            setLoggedInUser(response);
+        async function fetchUserData() {
+            try {
+                const userResponse = await UserAPI.findLoggedInUser();
+                setLoggedInUser(userResponse);
+
+                // @ts-ignore
+                const imageResponse = await ImageAPI.findByUserId(userResponse.userId);
+                setLoggedInUserProfilePicture(imageResponse.data.base64EncodedImage);
+
+                const basketResponse = await BasketAPI.findLoggedInUserBasket();
+                setLoggedInUserBasket(basketResponse);
+            }
+
+            catch (error) {
+                console.error(error);
+            }
         }
 
-        async function fetchUserImage() {
-            // @ts-ignore
-            const response = await ImageAPI.findByUserId(loggedInUser.userId);
-            setLoggedInUserProfilePicture(response.data.base64EncodedImage);
-        }
-
-        async function fetchUserBasket() {
-            const response = await BasketAPI.findLoggedInUserBasket();
-            setLoggedInUserBasket(response);
-        }
-
-        fetchUser();
-        fetchUserImage();
-        fetchUserBasket();
+        fetchUserData();
     }, []);
 
     useEffect(() => {

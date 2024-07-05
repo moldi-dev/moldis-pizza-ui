@@ -12,7 +12,17 @@ import {
 } from "./ui/dropdown-menu.tsx";
 import {Button} from "./ui/button.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "./ui/avatar.tsx";
-import {CircleAlertIcon, CircleCheckIcon, CreditCard, LogOut, Scroll, ShoppingCart, Trash2, User} from "lucide-react";
+import {
+    CircleAlertIcon,
+    CircleCheckIcon,
+    CreditCard,
+    LogOut,
+    PizzaIcon,
+    Scroll,
+    ShoppingCart,
+    Trash2,
+    User
+} from "lucide-react";
 import {Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "./ui/sheet.tsx";
 import PizzaInBasketCard from "./PizzaInBasketCard.tsx";
 import PizzaModel from "../models/PizzaModel.tsx";
@@ -138,9 +148,10 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
             <nav className="flex justify-between items-center py-3 px-2 bg-primary">
 
                 {/* Logo */}
-                <div>
+                <div className="flex justify-between">
                     <Link to="/pizzas">
-                        <h1 className="text-white">Moldi&apos;s Pizza</h1>
+                        <PizzaIcon className="h-12 w-12 text-white" />
+                        <span className="text-white">Moldi&apos;s Pizza</span>
                     </Link>
                 </div>
 
@@ -168,7 +179,7 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator/>
                                 <DropdownMenuGroup>
-                                    <Link to="profile">
+                                    <Link to="/profile">
                                         <DropdownMenuItem>
                                             <User className="mr-2 h-4 w-4"/>
                                             <span>Profile</span>

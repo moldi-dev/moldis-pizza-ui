@@ -10,23 +10,17 @@ const SignUpPage = () => {
 
     useEffect(() => {
         async function fetchLoggedInUserData() {
-            try {
-                const user = await UserAPI.findLoggedInUser();
-                setLoggedInUser(user);
+            const user = await UserAPI.findLoggedInUser();
+
+            if (user) {
+                navigate("/pizzas");
             }
 
-            catch (error) {
-                console.log(error);
-            }
+            setLoggedInUser(user);
         }
 
         fetchLoggedInUserData();
     }, []);
-
-    if (loggedInUser != undefined) {
-        // TODO: uncomment the following line when the app is ready
-        //  navigate("/pizzas");
-    }
 
     return (
         <>
