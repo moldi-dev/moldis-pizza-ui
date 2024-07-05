@@ -18,7 +18,6 @@ import {
     CreditCard,
     LogOut,
     PizzaIcon,
-    Scroll,
     ShoppingCart,
     Trash2,
     User
@@ -28,9 +27,8 @@ import PizzaInBasketCard from "./PizzaInBasketCard.tsx";
 import PizzaModel from "../models/PizzaModel.tsx";
 import {Separator} from "./ui/separator.tsx";
 import BasketAPI from "../apis/BasketAPI.tsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import StorageAPI from "../apis/StorageAPI.tsx";
-import React from "react";
 import OrderAPI from "../apis/OrderAPI.tsx";
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "./ui/dialog.tsx";
 

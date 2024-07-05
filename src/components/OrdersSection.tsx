@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import OrderModel from "../models/OrderModel.tsx";
 import {Card, CardContent, CardFooter, CardHeader} from "./ui/card.tsx";
 import {ShoppingCartIcon} from "lucide-react";
