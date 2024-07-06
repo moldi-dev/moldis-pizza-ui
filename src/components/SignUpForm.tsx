@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import {AlertDestructive} from "./ui/alert-destructive.tsx";
 import axios from "axios";
 import {Alert, AlertDescription, AlertTitle} from "./ui/alert.tsx";
-import {AlertCircle} from "lucide-react";
+import {AlertCircle, Eye, EyeOff} from "lucide-react";
 import {Textarea} from "./ui/textarea.tsx";
 
 const SignUpForm = () => {
@@ -17,11 +17,23 @@ const SignUpForm = () => {
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [validationErrors, setValidationErrors] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
 
     const [hasRegistrationSucceeded, setHasRegistrationSucceeded] = useState(false);
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    }
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    }
 
     const handleResendConfirmationEmail = async (email: string) => {
         try {
@@ -58,6 +70,26 @@ const SignUpForm = () => {
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+
+        if (!confirmPassword) {
+            setErrorMessage('The password confirmation is required');
+
+            setTimeout(() => {
+                setErrorMessage('');
+            }, 4000);
+
+            return;
+        }
+
+        else if (confirmPassword != password) {
+            setErrorMessage('The passwords do not match');
+
+            setTimeout(() => {
+                setErrorMessage('');
+            }, 4000);
+
+            return;
+        }
 
         try {
             const response = await axios.post('http://localhost:8080/api/v1/authentication/sign-up', {
@@ -136,7 +168,7 @@ const SignUpForm = () => {
                                         type="text"
                                         placeholder="Your username"
                                         onChange={e => setUsername(e.target.value)}
-                                        required />
+                                        required/>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="grid gap-2">
@@ -146,7 +178,7 @@ const SignUpForm = () => {
                                             type="text"
                                             placeholder="Your first name"
                                             onChange={e => setFirstName(e.target.value)}
-                                            required />
+                                            required/>
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="last-name">Last name</Label>
@@ -155,7 +187,7 @@ const SignUpForm = () => {
                                             type="text"
                                             placeholder="Your last name"
                                             onChange={e => setLastName(e.target.value)}
-                                            required />
+                                            required/>
                                     </div>
                                 </div>
                                 <div className="grid gap-2">
@@ -175,16 +207,37 @@ const SignUpForm = () => {
                                         rows={3}
                                         placeholder="Your address"
                                         onChange={e => setAddress(e.target.value)}
-                                        required />
+                                        required/>
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="password">Password</Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        placeholder="Your password"
-                                        onChange={e => setPassword(e.target.value)}
-                                        required />
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Your password"
+                                            onChange={e => setPassword(e.target.value)}
+                                            required/>
+                                        <span onClick={togglePasswordVisibility}
+                                              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showPassword ? <Eye/> : <EyeOff/>}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                    <div className="relative">
+                                        <Input
+                                            id="confirmPassword"
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            placeholder="Confirm password"
+                                            onChange={e => setConfirmPassword(e.target.value)}
+                                            required/>
+                                        <span onClick={toggleConfirmPasswordVisibility}
+                                              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showConfirmPassword ? <Eye/> : <EyeOff/>}
+                                        </span>
+                                    </div>
                                 </div>
                                 <Button type="submit" className="w-full" onClick={handleSubmit}>
                                     Sign up

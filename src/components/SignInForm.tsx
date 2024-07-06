@@ -7,6 +7,7 @@ import {Input} from "./ui/input.tsx";
 import {Label} from "./ui/label.tsx";
 import {AlertDestructive} from "./ui/alert-destructive.tsx";
 import {Checkbox} from "./ui/checkbox.tsx";
+import {Eye, EyeOff} from "lucide-react";
 
 const SignInForm = () => {
     const [username, setUsername] = useState('');
@@ -14,6 +15,12 @@ const SignInForm = () => {
     const [rememberMe, setRememberMe] = useState('false');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    }
 
     const handleCheckboxChange: React.FormEventHandler<HTMLButtonElement> = (e) => {
         if (rememberMe === 'false') {
@@ -97,12 +104,17 @@ const SignInForm = () => {
                                     Forgot your password?
                                 </Link>
                             </div>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="Your password"
-                                onChange={e => setPassword(e.target.value)}
-                                required />
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Your password"
+                                    onChange={e => setPassword(e.target.value)}
+                                    required />
+                                <span onClick={togglePasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                        {showPassword ? <Eye /> : <EyeOff />}
+                                </span>
+                            </div>
                         </div>
                         <div className="grid gap-2">
                             <div className="flex gap-2 items-center">
