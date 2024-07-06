@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "./ui/card.tsx";
 import {Label} from "./ui/label.tsx";
 import {Input} from "./ui/input.tsx";
@@ -21,6 +21,41 @@ const SignUpForm = () => {
     const [validationErrors, setValidationErrors] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
 
+    const [hasRegistrationSucceeded, setHasRegistrationSucceeded] = useState(false);
+
+    const handleResendConfirmationEmail = async (email: string) => {
+        try {
+            const response = await axios.post(`http://localhost:8080/api/v1/users/resend-confirmation-email/email=${email}`);
+
+            setSuccessMessage(response.data.message);
+
+            setTimeout(() => {
+                setSuccessMessage('');
+            }, 4000);
+        }
+
+        catch (error) {
+            console.log(error);
+
+            if (error.response && error.response.status == 400) {
+                setErrorMessage(error.response.data.message);
+            }
+
+            else if (error.response && error.response.status == 409) {
+                setErrorMessage(error.response.data.message);
+            }
+
+            else if (error.response) {
+                setErrorMessage('An unexpected error has occurred. Please try again later!');
+            }
+
+            setTimeout(() => {
+                setErrorMessage('');
+                setValidationErrors([]);
+            }, 4000);
+        }
+    }
+
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
@@ -35,6 +70,7 @@ const SignUpForm = () => {
             })
 
             setSuccessMessage(response.data.message);
+            setHasRegistrationSucceeded(true);
 
             setTimeout(() => {
                 setSuccessMessage('');
@@ -90,74 +126,97 @@ const SignUpForm = () => {
                     )}
                 </CardHeader>
                 <CardContent>
-                    <div className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="username">Username</Label>
-                            <Input
-                                id="username"
-                                type="text"
-                                placeholder="Your username"
-                                onChange={e => setUsername(e.target.value)}
-                                required />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="first-name">First name</Label>
-                                <Input
-                                    id="first-name"
-                                    type="text"
-                                    placeholder="Your first name"
-                                    onChange={e => setFirstName(e.target.value)}
-                                    required />
+                    {!hasRegistrationSucceeded &&
+                        <>
+                            <div className="grid gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="username">Username</Label>
+                                    <Input
+                                        id="username"
+                                        type="text"
+                                        placeholder="Your username"
+                                        onChange={e => setUsername(e.target.value)}
+                                        required />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="first-name">First name</Label>
+                                        <Input
+                                            id="first-name"
+                                            type="text"
+                                            placeholder="Your first name"
+                                            onChange={e => setFirstName(e.target.value)}
+                                            required />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="last-name">Last name</Label>
+                                        <Input
+                                            id="last-name"
+                                            type="text"
+                                            placeholder="Your last name"
+                                            onChange={e => setLastName(e.target.value)}
+                                            required />
+                                    </div>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        placeholder="Your email"
+                                        onChange={e => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="address">Address</Label>
+                                    <Textarea
+                                        id="address"
+                                        rows={3}
+                                        placeholder="Your address"
+                                        onChange={e => setAddress(e.target.value)}
+                                        required />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        placeholder="Your password"
+                                        onChange={e => setPassword(e.target.value)}
+                                        required />
+                                </div>
+                                <Button type="submit" className="w-full" onClick={handleSubmit}>
+                                    Sign up
+                                </Button>
                             </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="last-name">Last name</Label>
-                                <Input
-                                    id="last-name"
-                                    type="text"
-                                    placeholder="Your last name"
-                                    onChange={e => setLastName(e.target.value)}
-                                    required />
+                            <div className="mt-4 text-center text-sm">
+                                Already have an account?{" "}
+                                <Link to="/sign-in" className="underline">
+                                    Sign in
+                                </Link>
                             </div>
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="Your email"
-                                onChange={e => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="address">Address</Label>
-                            <Textarea
-                                id="address"
-                                rows={3}
-                                placeholder="Your address"
-                                onChange={e => setAddress(e.target.value)}
-                                required />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="Your password"
-                                onChange={e => setPassword(e.target.value)}
-                                required />
-                        </div>
-                        <Button type="submit" className="w-full" onClick={handleSubmit}>
-                            Sign up
-                        </Button>
-                    </div>
-                    <div className="mt-4 text-center text-sm">
-                        Already have an account?{" "}
-                        <Link to="/sign-in" className="underline">
-                            Sign in
-                        </Link>
-                    </div>
+                        </>
+                    }
+                    {hasRegistrationSucceeded &&
+                        <>
+                            <div className="grid gap-4">
+                                <div className="grid gap-2">
+                                    <Link to="/sign-in" className="underline">
+                                        <Button type="submit" className="w-full">
+                                            Account verified? Back to sign in
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="mt-4 text-center text-sm">
+                                Didn't receive the confirmation email?{" "}
+                                <p onClick={e => handleResendConfirmationEmail(email)} className="underline hover:cursor-pointer">
+                                    Resend the confirmation email
+                                </p>
+                            </div>
+                        </>
+                    }
                 </CardContent>
             </Card>
         </>

@@ -149,7 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
                 <div className="flex justify-between">
                     <Link to="/pizzas">
                         <PizzaIcon className="h-12 w-12 text-white" />
-                        <span className="text-white">Moldi&apos;s Pizza</span>
+                        <span className="text-white">Moldi's Pizza</span>
                     </Link>
                 </div>
 

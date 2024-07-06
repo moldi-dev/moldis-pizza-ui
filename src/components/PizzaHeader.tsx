@@ -15,7 +15,7 @@ const PizzaHeader = () => {
                     <div className="space-y-4 max-w-2xl flex flex-col items-center">
                         <PizzaIcon className="h-20 w-20 text-white"/>
                         <h1 className="text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-                            Moldi&apos;s Pizza
+                            Moldi's Pizza
                         </h1>
                         <p className="text-lg text-white/80 md:text-xl">
                             Experience the best pizza in town, made with the freshest ingredients and delivered straight

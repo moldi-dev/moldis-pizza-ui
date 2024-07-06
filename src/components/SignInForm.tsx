@@ -93,7 +93,7 @@ const SignInForm = () => {
                         <div className="grid gap-2">
                             <div className="flex items-center">
                                 <Label htmlFor="password">Password</Label>
-                                <Link to="#" className="ml-auto inline-block text-sm underline">
+                                <Link to="/forgot-password" className="ml-auto inline-block text-sm underline">
                                     Forgot your password?
                                 </Link>
                             </div>
@@ -118,7 +118,7 @@ const SignInForm = () => {
                         </Button>
                     </div>
                     <div className="mt-4 text-center text-sm">
-                        Don&apos;t have an account?{" "}
+                        Don't have an account?{" "}
                         <Link to="/sign-up" className="underline">
                             Sign up
                         </Link>

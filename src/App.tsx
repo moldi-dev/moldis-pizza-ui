@@ -6,6 +6,7 @@ import OrdersPage from "./pages/OrdersPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import React from "react";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
                   <Route path="/orders" element={<OrdersPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/" element={<Navigate to="/pizzas" />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                   <Route path="*" element={<NotFoundPage />} />
               </Routes>
           </BrowserRouter>

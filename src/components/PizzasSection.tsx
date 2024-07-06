@@ -11,6 +11,7 @@ import {
 import PizzaSectionCard from "./PizzaSectionCard.tsx";
 import UserModel from "../models/UserModel.tsx";
 import BasketModel from "../models/BasketModel.tsx";
+import {PizzaIcon} from "lucide-react";
 
 interface PizzasSectionProps {
     pizzas: PizzaModel[] | undefined;
@@ -30,6 +31,7 @@ const PizzasSection: React.FC<PizzasSectionProps> = ({pizzas, page, numberOfPage
     };
 
     return (
+        pizzas && pizzas.length > 0 ? (
         <section className="w-full py-12 md:py-16 lg:py-20">
             <div className="container grid gap-8 px-4 md:px-6">
                 <div className="grid gap-2 text-center">
@@ -65,6 +67,20 @@ const PizzasSection: React.FC<PizzasSectionProps> = ({pizzas, page, numberOfPage
                 </Pagination>
             </div>
         </section>
+            ) : (
+            <section className="flex flex-col items-center justify-center gap-6 py-16 md:py-24">
+                <div className="flex max-w-md flex-col items-center justify-center gap-4 text-center">
+                    <PizzaIcon className="h-20 w-20 text-red-500"/>
+                    <h1 className="text-2xl font-bold">No Pizzas available yet</h1>
+                    <h2 className="text-muted-foreground">
+                        It looks like we don't have any pizzas available at the moment.
+                        Please check back later to see our wide selection of delicious pizzas.
+                        Whether you're craving a classic Margherita or something more adventurous,
+                        we'll have something to satisfy your taste buds soon.
+                    </h2>
+                </div>
+            </section>
+        )
     );
 };
 
