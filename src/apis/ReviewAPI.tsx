@@ -42,9 +42,9 @@ async function findAllByUserId(id: number, accessToken: string) {
     }
 }
 
-async function findAllByPizzaId(id: number) {
+async function findAllByPizzaId(id: number, page: number, size: number) {
     try {
-        const url = `http://localhost:8080/api/v1/reviews/pizza-id=${id}`;
+        const url = `http://localhost:8080/api/v1/reviews/pizza-id=${id}?page=${page}&size=${size}`;
         const response = await axios.get(url);
         return response.data;
     }

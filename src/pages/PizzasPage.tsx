@@ -51,7 +51,7 @@ const PizzasPage = () => {
 
     useEffect(() => {
         async function fetchPizzas() {
-            const response = await PizzaAPI.findAll(page, 12);
+            const response = await PizzaAPI.findAll(page, 8);
 
             setNumberOfPages(response.data.pizzasDTOs.totalPages);
             setPizzas(response.data.pizzasDTOs.content);

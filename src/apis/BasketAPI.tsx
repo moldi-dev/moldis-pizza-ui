@@ -45,7 +45,7 @@ async function findByUserId(id: number, accessToken: string) {
     }
 }
 
-async function addPizzaToUserBasket(userId: number, pizzaId: number, accessToken: string) {
+async function addPizzaToUserBasket(userId: number, pizzaId: number | undefined, accessToken: string) {
     try {
         const url = `http://localhost:8080/api/v1/baskets/add-pizza/user-id=${userId}/pizza-id=${pizzaId}`;
         const response = await axios.patch(url, null, {

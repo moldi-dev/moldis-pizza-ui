@@ -3,7 +3,7 @@ import PizzaModel from "./PizzaModel.tsx";
 
 interface ReviewModel {
     reviewId: number,
-    user: UserModel,
+    userDTO: UserModel,
     rating: number,
     comment: string,
     pizza: PizzaModel,

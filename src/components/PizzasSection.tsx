@@ -53,11 +53,9 @@ const PizzasSection: React.FC<PizzasSectionProps> = ({pizzas, page, numberOfPage
                                 <PaginationPrevious onClick={() => handlePageChange(page - 1)} />
                             </PaginationItem>
                         )}
-                        {[...Array(numberOfPages)].map((_, index) => (
-                            <PaginationItem key={index}>
-                                <PaginationLink onClick={() => handlePageChange(index)} isActive={page == index}>{index + 1}</PaginationLink>
-                            </PaginationItem>
-                        ))}
+                        <PaginationItem>
+                            <PaginationLink isActive={true}>{page + 1}</PaginationLink>
+                        </PaginationItem>
                         {page < numberOfPages - 1 && (
                             <PaginationItem>
                                 <PaginationNext onClick={() => handlePageChange(page + 1)} />

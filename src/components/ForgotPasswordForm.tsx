@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "./ui/card.tsx";
 import {AlertDestructive} from "./ui/alert-destructive.tsx";
 import {Label} from "./ui/label.tsx";
