@@ -19,9 +19,10 @@ interface UpdateProfileFormProps {
     updateLoggedInUserProfilePicture: (updateLoggedInUserProfilePicture: string) => void;
 }
 
-const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({ loggedInUser, loggedInUserProfilePicture, updateLoggedInUserData, updateLoggedInUserProfilePicture }) => {
-    const username = loggedInUser?.username;
-    const email = loggedInUser?.email;
+const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, loggedInUserProfilePicture, updateLoggedInUserData, updateLoggedInUserProfilePicture }) => {
+
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [address, setAddress] = useState('');
@@ -44,6 +45,8 @@ const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({ loggedInUser, log
 
     useEffect(() => {
         if (loggedInUser) {
+            setUsername(loggedInUser.username);
+            setEmail(loggedInUser.email);
             setUser(loggedInUser);
             setFirstName(loggedInUser.firstName);
             setLastName(loggedInUser.lastName);
@@ -260,162 +263,164 @@ const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({ loggedInUser, log
 
     return (
         <>
-            <div className="max-w-3xl mx-auto p-6 sm:p-8 md:p-10 mt-10 mb-10">
-                <Card className="mb-10">
-                    <CardHeader>
-                        <CardTitle className="text-3xl font-bold text-center">Your profile</CardTitle>
-                        <CardDescription className="text-center">Update your profile information</CardDescription>
-                        {validationErrors.length > 0 && validationErrors.map((error, index) => (
-                            <AlertDestructive
-                                key={index}
-                                title="Error"
-                                description={error}
-                            />
-                        ))}
-                        {successMessage && (
-                            <Alert variant="default">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>Success</AlertTitle>
-                                <AlertDescription>{successMessage}</AlertDescription>
-                            </Alert>
-                        )}
-                        {errorMessage && (
-                            <AlertDestructive description={errorMessage} title="Error" />
-                        )}
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-1 gap-6">
-                        <div className="flex flex-col items-center gap-4">
-                            <Avatar className="h-24 w-24">
-                                <AvatarImage src={`data:image/jpeg;base64,${loggedInUserProfilePicture}`} />
-                                <AvatarFallback>{user?.lastName.charAt(0).concat(user?.firstName.charAt(0)).toUpperCase()}</AvatarFallback>
-                            </Avatar>
-                            <Label htmlFor="picture">Change your profile picture</Label>
-                            <Input id="picture"
-                                   type="file"
-                                   onChange={handleUpdateProfilePicture}/>
-                            {image !== '' &&
-                                <Button onClick={handleDeleteProfilePicture}>Delete profile picture</Button>
-                            }
-                        </div>
-                        <div className="grid gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="username">Username</Label>
-                                <Input
-                                    id="username"
-                                    value={user?.username}
-                                    disabled/>
+            {user &&
+                <div className="max-w-3xl mx-auto p-6 sm:p-8 md:p-10 mt-10 mb-10">
+                    <Card className="mb-10">
+                        <CardHeader>
+                            <CardTitle className="text-3xl font-bold text-center">Your profile</CardTitle>
+                            <CardDescription className="text-center">Update your profile information</CardDescription>
+                            {validationErrors.length > 0 && validationErrors.map((error, index) => (
+                                <AlertDestructive
+                                    key={index}
+                                    title="Error"
+                                    description={error}
+                                />
+                            ))}
+                            {successMessage && (
+                                <Alert variant="default">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Success</AlertTitle>
+                                    <AlertDescription>{successMessage}</AlertDescription>
+                                </Alert>
+                            )}
+                            {errorMessage && (
+                                <AlertDestructive description={errorMessage} title="Error" />
+                            )}
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 gap-6">
+                            <div className="flex flex-col items-center gap-4">
+                                <Avatar className="h-24 w-24">
+                                    <AvatarImage src={`data:image/jpeg;base64,${loggedInUserProfilePicture}`} />
+                                    <AvatarFallback>{user.lastName.charAt(0).concat(user.firstName.charAt(0)).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                                <Label htmlFor="picture">Change your profile picture</Label>
+                                <Input id="picture"
+                                       type="file"
+                                       onChange={handleUpdateProfilePicture}/>
+                                {image !== '' &&
+                                    <Button onClick={handleDeleteProfilePicture}>Delete profile picture</Button>
+                                }
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="firstName">First Name</Label>
+                                    <Label htmlFor="username">Username</Label>
                                     <Input
-                                        id="firstName"
-                                        placeholder="Enter your first name"
-                                        defaultValue={user?.firstName}
-                                        onChange={e => setFirstName(e.target.value)}
+                                        id="username"
+                                        value={user.username}
+                                        disabled/>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="firstName">First Name</Label>
+                                        <Input
+                                            id="firstName"
+                                            placeholder="Enter your first name"
+                                            defaultValue={user.firstName}
+                                            onChange={e => setFirstName(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="lastName">Last Name</Label>
+                                        <Input
+                                            id="lastName"
+                                            placeholder="Enter your last name"
+                                            defaultValue={user.lastName}
+                                            onChange={e => setLastName(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="address">Address</Label>
+                                    <Textarea id="address"
+                                              rows={3}
+                                              placeholder="Enter your address"
+                                              defaultValue={user.address}
+                                              onChange={e => setAddress(e.target.value)}
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="lastName">Last Name</Label>
+                                    <Label htmlFor="email">Email</Label>
                                     <Input
-                                        id="lastName"
-                                        placeholder="Enter your last name"
-                                        defaultValue={user?.lastName}
-                                        onChange={e => setLastName(e.target.value)}
+                                        id="email"
+                                        type="email"
+                                        value={user.email}
+                                        disabled
                                     />
                                 </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Enter your password to confirm changes"
+                                            onChange={e => setPassword(e.target.value)}
+                                        />
+                                        <span onClick={togglePasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showPassword ? <Eye /> : <EyeOff />}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
+                        </CardContent>
+                        <CardFooter>
+                            <Button className="ml-auto" onClick={handleSubmit}>Save Changes</Button>
+                        </CardFooter>
+                    </Card>
+                    <Card className="mb-10">
+                        <CardHeader>
+                            <CardTitle className="text-3xl font-bold text-center">Change your password</CardTitle>
+                            <CardDescription className="text-center">Enter your current password and your new password below to update your account's password</CardDescription>
+                            {successMessage2 && (
+                                <Alert variant="default">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Success</AlertTitle>
+                                    <AlertDescription>{successMessage2}</AlertDescription>
+                                </Alert>
+                            )}
+                            {errorMessage2 && (
+                                <AlertDestructive description={errorMessage2} title="Error" />
+                            )}
+                        </CardHeader>
+                        <CardContent className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="address">Address</Label>
-                                <Textarea id="address"
-                                          rows={3}
-                                          placeholder="Enter your address"
-                                          defaultValue={user?.address}
-                                          onChange={e => setAddress(e.target.value)}
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    value={user?.email}
-                                    disabled
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="currentPassword">Current Password</Label>
                                 <div className="relative">
                                     <Input
-                                        id="password"
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="Enter your password to confirm changes"
-                                        onChange={e => setPassword(e.target.value)}
+                                        id="currentPassword"
+                                        type={showCurrentPassword ? "text" : "password"}
+                                        placeholder="Enter your current password"
+                                        onChange={e => setCurrentPassword(e.target.value)}
                                     />
-                                    <span onClick={togglePasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
-                                        {showPassword ? <Eye /> : <EyeOff />}
+                                    <span onClick={toggleCurrentPasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showCurrentPassword ? <Eye /> : <EyeOff />}
                                     </span>
                                 </div>
                             </div>
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button className="ml-auto" onClick={handleSubmit}>Save Changes</Button>
-                    </CardFooter>
-                </Card>
-                <Card className="mb-10">
-                    <CardHeader>
-                        <CardTitle className="text-3xl font-bold text-center">Change your password</CardTitle>
-                        <CardDescription className="text-center">Enter your current password and your new password below to update your account's password</CardDescription>
-                        {successMessage2 && (
-                            <Alert variant="default">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>Success</AlertTitle>
-                                <AlertDescription>{successMessage2}</AlertDescription>
-                            </Alert>
-                        )}
-                        {errorMessage2 && (
-                            <AlertDestructive description={errorMessage2} title="Error" />
-                        )}
-                    </CardHeader>
-                    <CardContent className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="currentPassword">Current Password</Label>
-                            <div className="relative">
-                                <Input
-                                    id="currentPassword"
-                                    type={showCurrentPassword ? "text" : "password"}
-                                    placeholder="Enter your current password"
-                                    onChange={e => setCurrentPassword(e.target.value)}
-                                />
-                                <span onClick={toggleCurrentPasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
-                                        {showCurrentPassword ? <Eye /> : <EyeOff />}
-                                </span>
+                            <div className="grid gap-2">
+                                <Label htmlFor="newPassword">New Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="newPassword"
+                                        type={showNewPassword ? "text" : "password"}
+                                        placeholder="Enter your new password"
+                                        onChange={e => setNewPassword(e.target.value)}
+                                    />
+                                    <span onClick={toggleNewPasswordVisibility}
+                                          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showNewPassword ? <Eye/> : <EyeOff/>}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="newPassword">New Password</Label>
-                            <div className="relative">
-                                <Input
-                                    id="newPassword"
-                                    type={showNewPassword ? "text" : "password"}
-                                    placeholder="Enter your new password"
-                                    onChange={e => setNewPassword(e.target.value)}
-                                />
-                                <span onClick={toggleNewPasswordVisibility}
-                                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
-                                        {showNewPassword ? <Eye/> : <EyeOff/>}
-                                </span>
-                            </div>
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button className="ml-auto" onClick={handleChangePassword}>Change your password</Button>
-                    </CardFooter>
-                </Card>
-            </div>
+                        </CardContent>
+                        <CardFooter>
+                            <Button className="ml-auto" onClick={handleChangePassword}>Change your password</Button>
+                        </CardFooter>
+                    </Card>
+                </div>
+            }
         </>
     );
 };
 
-export default UpdateProfileForm;
+export default UpdateProfileForms;

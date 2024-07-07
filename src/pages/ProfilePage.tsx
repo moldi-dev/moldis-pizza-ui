@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import UpdateProfileForm from "../components/UpdateProfileForm.tsx";
+import UpdateProfileForms from "../components/UpdateProfileForms.tsx";
 import Footer from "../components/Footer.tsx";
 import Navbar from "../components/Navbar.tsx";
 import UserModel from "../models/UserModel.tsx";
@@ -25,36 +25,30 @@ const ProfilePage = () => {
     }
 
     useEffect(() => {
-        async function fetchUserData() {
-            try {
-                const userResponse = await UserAPI.findLoggedInUser();
-
-                if (!userResponse) {
-                    navigate("/sign-in");
-                }
-
-                setLoggedInUser(userResponse);
-
-                // @ts-ignore
-                const imageResponse = await ImageAPI.findByUserId(userResponse.userId);
-                setLoggedInUserProfilePicture(imageResponse.data.base64EncodedImage);
-
-                const basketResponse = await BasketAPI.findLoggedInUserBasket();
-                setLoggedInUserBasket(basketResponse);
-            }
-
-            catch (error) {
-                console.error(error);
-            }
+        async function fetchUser() {
+            const userResponse = await UserAPI.findLoggedInUser();
+            setLoggedInUser(userResponse);
         }
 
-        fetchUserData();
+        async function fetchImage() {
+            const imageResponse = await ImageAPI.findLoggedInUserProfilePicture();
+            setLoggedInUserProfilePicture(imageResponse);
+        }
+
+        async function fetchBasket() {
+            const basketResponse = await BasketAPI.findLoggedInUserBasket();
+            setLoggedInUserBasket(basketResponse);
+        }
+
+        fetchUser();
+        fetchImage();
+        fetchBasket();
     }, []);
 
     return (
         <>
             <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket}/>
-            <UpdateProfileForm updateLoggedInUserProfilePicture={updateLoggedInUserProfilePicture} updateLoggedInUserData={updateLoggedInUserData} loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}/>
+            <UpdateProfileForms updateLoggedInUserProfilePicture={updateLoggedInUserProfilePicture} updateLoggedInUserData={updateLoggedInUserData} loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}/>
             <Footer />
         </>
     );

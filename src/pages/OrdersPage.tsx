@@ -25,30 +25,29 @@ const OrdersPage = () => {
     }
 
     useEffect(() => {
-        async function fetchUserData() {
-            try {
-                const userResponse = await UserAPI.findLoggedInUser();
+        async function fetchUser() {
+            const userResponse = await UserAPI.findLoggedInUser();
 
-                if (!userResponse) {
-                    navigate("/sign-in");
-                }
-
-                setLoggedInUser(userResponse);
-
-                // @ts-ignore
-                const imageResponse = await ImageAPI.findByUserId(userResponse.userId);
-                setLoggedInUserProfilePicture(imageResponse.data.base64EncodedImage);
-
-                const basketResponse = await BasketAPI.findLoggedInUserBasket();
-                setLoggedInUserBasket(basketResponse);
+            if (!userResponse) {
+                navigate("/sign-in");
             }
 
-            catch (error) {
-                console.error(error);
-            }
+            setLoggedInUser(userResponse);
         }
 
-        fetchUserData();
+        async function fetchImage() {
+            const imageResponse = await ImageAPI.findLoggedInUserProfilePicture();
+            setLoggedInUserProfilePicture(imageResponse);
+        }
+
+        async function fetchBasket() {
+            const basketResponse = await BasketAPI.findLoggedInUserBasket();
+            setLoggedInUserBasket(basketResponse);
+        }
+
+        fetchUser();
+        fetchImage();
+        fetchBasket();
     }, []);
 
     useEffect(() => {
@@ -64,7 +63,7 @@ const OrdersPage = () => {
 
     return (
         <div>
-            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket} />
+            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket}/>
             <OrdersSection numberOfPages={numberOfPages} updatePage={updatePage} page={page}  loggedInUserOrders={loggedInUserOrders}/>
             <Footer />
         </div>

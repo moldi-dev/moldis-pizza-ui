@@ -1,5 +1,5 @@
 import UserModel from "../models/UserModel.tsx";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import BasketModel from "../models/BasketModel.tsx";
 import {
     DropdownMenu,
@@ -38,12 +38,14 @@ interface NavbarProps {
     loggedInUserBasket: BasketModel | undefined;
 }
 
-const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture, loggedInUserBasket}) => {
+const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePicture, loggedInUserBasket}) => {
     const navigate = useNavigate();
 
     const [basket, setBasket] = useState<BasketModel | undefined>(loggedInUserBasket);
-    const [isOrderPlaced, setIsOrderPlaced] = useState(false);
     const [error, setError] = useState(false);
+
+    const location = useLocation();
+    const isOnCheckoutPage: boolean = location.pathname === '/checkout';
 
     useEffect(() => {
         if (loggedInUserBasket) {
@@ -67,28 +69,6 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
         }
     }
 
-    const handlePlaceOrder = async () => {
-        const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
-
-        if (loggedInUser != undefined && accessToken != null) {
-            try {
-                const response = await OrderAPI.placeOrderByUsersBasket(loggedInUser.userId, accessToken);
-                setIsOrderPlaced(true);
-
-                // @ts-ignore
-                setBasket((prevBasket) => ({
-                    ...prevBasket,
-                    pizzas: [] as PizzaModel[],
-                }));
-            }
-
-            catch (error) {
-                console.log(error);
-                setError(true);
-            }
-        }
-    }
-
     const handleSignOut = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -102,28 +82,6 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
 
     return (
         <>
-            {isOrderPlaced &&
-                <>
-                    <Dialog defaultOpen={true}>
-                        <DialogTitle />
-                        <DialogTrigger asChild>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
-                            <div className="flex flex-col items-center justify-center gap-4 py-8">
-                                <CircleCheckIcon className="size-12 text-green-500" />
-                                <div className="grid gap-2 text-center">
-                                    <h3 className="text-2xl font-bold">Order placed</h3>
-                                    <p className="text-muted-foreground">Your order has been placed successfully!</p>
-                                    <Link to="/orders">
-                                        <Button>See your orders</Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
-                </>
-            }
-
             {error &&
                 <>
                 <Dialog defaultOpen={true}>
@@ -200,7 +158,7 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
                     }
 
                     {/* User shopping cart with sheet */}
-                    {loggedInUser != undefined &&
+                    {loggedInUser != undefined && !isOnCheckoutPage &&
                         <div className="flex items-center space-x-4 text-white px-3">
                                 <Sheet>
                                     <SheetTrigger asChild>
@@ -236,7 +194,9 @@ const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture
 
                                                 <SheetFooter className="flex flex-col mt-2">
                                                     <SheetClose asChild>
-                                                        <Button onClick={handlePlaceOrder}>Place order</Button>
+                                                        <Link to="/checkout">
+                                                            <Button>Go to checkout</Button>
+                                                        </Link>
                                                     </SheetClose>
                                                 </SheetFooter>
                                             </>

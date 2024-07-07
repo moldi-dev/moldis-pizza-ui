@@ -10,7 +10,7 @@ interface ReviewCardProps {
 }
 
 const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
-    const [userImage, setUserImage] = useState<string | undefined>(undefined);
+    const [userImage, setUserImage] = useState<string | undefined>('');
 
     useEffect(() => {
         async function fetchReviewUserImage() {

@@ -55,30 +55,30 @@ const PizzaPage = () => {
     }
 
     useEffect(() => {
-        async function fetchUserData() {
-            try {
-                const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
+        async function fetchUser() {
+            const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
+            const userResponse = await UserAPI.findLoggedInUser();
 
-                const userResponse = await UserAPI.findLoggedInUser();
-                setLoggedInUser(userResponse);
-
-                const imageResponse = await ImageAPI.findByUserId(userResponse.userId);
-                setLoggedInUserProfilePicture(imageResponse.data.base64EncodedImage);
-
-                const basketResponse = await BasketAPI.findLoggedInUserBasket();
-                setLoggedInUserBasket(basketResponse);
-
+            if (userResponse) {
                 fetchAdditionalData(userResponse.userId, accessToken);
             }
 
-            catch (error) {
-                console.error(error);
-            }
+            setLoggedInUser(userResponse);
+        }
+
+        async function fetchImage() {
+            const imageResponse = await ImageAPI.findLoggedInUserProfilePicture();
+            setLoggedInUserProfilePicture(imageResponse);
+        }
+
+        async function fetchBasket() {
+            const basketResponse = await BasketAPI.findLoggedInUserBasket();
+            setLoggedInUserBasket(basketResponse);
         }
 
         async function fetchAdditionalData(userId: number, accessToken: string | null) {
             try {
-                const hasBoughtResponse = await axios.get(`http://localhost:8080/api/v1/orders/user-id=${userId}/pizza-id=${pizzaId}`, {
+                const hasBoughtResponse = await axios.get(`http://localhost:8080/api/v1/orders/exists/user-id=${userId}/pizza-id=${pizzaId}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     }
@@ -86,7 +86,7 @@ const PizzaPage = () => {
 
                 setHasLoggedInUserBoughtThePizza(hasBoughtResponse.data.data.answer);
 
-                const hasReviewedResponse = await axios.get(`http://localhost:8080/api/v1/reviews/user-id=${userId}/pizza-id=${pizzaId}`, {
+                const hasReviewedResponse = await axios.get(`http://localhost:8080/api/v1/reviews/exists/user-id=${userId}/pizza-id=${pizzaId}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`
                     }
@@ -100,7 +100,9 @@ const PizzaPage = () => {
             }
         }
 
-        fetchUserData();
+        fetchUser();
+        fetchImage();
+        fetchBasket();
     }, []);
 
     useEffect(() => {
@@ -111,14 +113,14 @@ const PizzaPage = () => {
                 setPizza(pizzaResponse.data.data.pizzaDTO);
 
                 const images = pizzaResponse.data.data.pizzaDTO.images;
-                const fetchedImages: string[] = [];
+                const fetchedImages= new Array(images.length).fill('');
 
                 for (let index = 0; index < images.length; index++) {
                     const imageId = images[index].imageId;
 
                     const imageDataResponse = await axios.get(`http://localhost:8080/api/v1/images/id=${imageId}`);
 
-                    fetchedImages.push(imageDataResponse.data.data.base64EncodedImage);
+                    fetchedImages[index] = (imageDataResponse.data.data.base64EncodedImage);
                 }
 
                 setPizzaImages(fetchedImages);
@@ -154,9 +156,6 @@ const PizzaPage = () => {
 
         fetchReviewsData();
     }, []);
-
-    console.log('HAS REVIEWED: ' + JSON.stringify(hasLoggedInUserReviewedThePizza, null, '\t'));
-    console.log('HAS BOUGHT: ' + JSON.stringify(hasLoggedInUserBoughtThePizza, null, '\t'));
 
     return (
         <>

@@ -9,21 +9,16 @@ import {
     PaginationPrevious
 } from "./ui/pagination.tsx";
 import PizzaSectionCard from "./PizzaSectionCard.tsx";
-import UserModel from "../models/UserModel.tsx";
-import BasketModel from "../models/BasketModel.tsx";
 import {PizzaIcon} from "lucide-react";
 
 interface PizzasSectionProps {
     pizzas: PizzaModel[] | undefined;
-    loggedInUser: UserModel | undefined;
-    loggedInUserBasket: BasketModel | undefined;
     page: number;
     updatePage: (setPage: number) => void;
     numberOfPages: number;
-    updateBasket: (newBasket: BasketModel) => void;
 }
 
-const PizzasSection: React.FC<PizzasSectionProps> = ({pizzas, page, numberOfPages, updatePage, loggedInUser, loggedInUserBasket, updateBasket}) => {
+const PizzasSection: React.FC<PizzasSectionProps> = ({pizzas, page, numberOfPages, updatePage}) => {
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < numberOfPages) {
             updatePage(newPage);
@@ -42,7 +37,7 @@ const PizzasSection: React.FC<PizzasSectionProps> = ({pizzas, page, numberOfPage
                 <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {pizzas && pizzas.map((pizza, index) => (
                         <div key={index} className="grid gap-4 rounded-lg border bg-card p-4 shadow-sm">
-                            <PizzaSectionCard pizza={pizza} loggedInUser={loggedInUser} loggedInUserBasket={loggedInUserBasket} updateBasket={updateBasket}/>
+                            <PizzaSectionCard pizza={pizza}/>
                         </div>
                     ))}
                 </div>

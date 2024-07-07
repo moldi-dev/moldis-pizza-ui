@@ -2,18 +2,13 @@ import {Button} from "./ui/button.tsx";
 import React, {useEffect, useState} from "react";
 import PizzaModel from "../models/PizzaModel.tsx";
 import ImageAPI from "../apis/ImageAPI.tsx";
-import UserModel from "../models/UserModel.tsx";
-import BasketModel from "../models/BasketModel.tsx";
 import {Link} from "react-router-dom";
 
 interface PizzaSectionCardProps {
     pizza: PizzaModel;
-    loggedInUser: UserModel | undefined;
-    loggedInUserBasket: BasketModel | undefined;
-    updateBasket: (newBasket: BasketModel) => void;
 }
 
-const PizzaSectionCard: React.FC<PizzaSectionCardProps> = ({ pizza, loggedInUser, loggedInUserBasket, updateBasket }) => {
+const PizzaSectionCard: React.FC<PizzaSectionCardProps> = ({ pizza }) => {
     const [pizzaImage, setPizzaImage] = useState('');
 
     useEffect(() => {

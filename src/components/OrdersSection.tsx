@@ -13,6 +13,9 @@ import {
     PaginationPrevious
 } from "./ui/pagination.tsx";
 import {Badge} from "./ui/badge.tsx";
+import {Button} from "./ui/button.tsx";
+import StorageAPI from "../apis/StorageAPI.tsx";
+import axios from "axios";
 
 interface OrdersTableProps {
     loggedInUserOrders: OrderModel[] | undefined;
@@ -25,6 +28,26 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < numberOfPages) {
             updatePage(newPage);
+        }
+    }
+
+    const handlePayOrder = async (orderId: number) => {
+        const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
+
+        try {
+            const response = await axios.post(`http://localhost:8080/api/v1/orders/pay-pending-order/id=${orderId}`, {}, {
+                headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    }
+            });
+
+            if (response.data.developerMessage) {
+                window.location.href = response.data.developerMessage;
+            }
+        }
+
+        catch (error) {
+            console.log(error);
         }
     }
 
@@ -45,7 +68,7 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
                             </CardHeader>
                             <CardContent className="p-4">
                                 <div className="mb-4">
-                                    <Badge className="font-semibold">{order.status}</Badge>
+                                    {order.status == 'PENDING' ? <Badge className="font-semibold">{order.status}</Badge> : <Badge variant="outline" className="text-red-500">{order.status}</Badge>}
                                 </div>
                                 <div className="space-y-4">
                                     {order.pizzas.map((pizza, index) => (
@@ -56,8 +79,18 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
                                 </div>
                             </CardContent>
                             <CardFooter className="bg-muted p-4">
-                                <div className="flex justify-between items-center">
-                                    <span>Total: ${order.totalPrice}</span>
+                                <div className="flex justify-between items-end">
+                                    {order.status === 'PENDING' && (
+                                        <Button className="justify-between items-start" onClick={() => handlePayOrder(order.orderId)}>
+                                            Pay ${order.totalPrice.toFixed(2)}
+                                        </Button>
+                                    )}
+
+                                    {order.status !== 'PENDING' && (
+                                        <div className="flex items-end">
+                                            Total paid: ${order.totalPrice.toFixed(2)}
+                                        </div>
+                                    )}
                                 </div>
                             </CardFooter>
                         </Card>

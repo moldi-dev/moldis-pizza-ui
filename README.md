@@ -12,6 +12,9 @@ Welcome to Moldi's Pizza (UI only). This React application constitutes the user 
 - Profile
 - Orders
 - Custom pizza page with reviews
+- Checkout
+- Payment success
+- Payment failed/canceled
 
 
 ## Technologies used

@@ -1,4 +1,7 @@
 import axios from "axios";
+import StorageAPI from "./StorageAPI.tsx";
+import {jwtDecode} from "jwt-decode";
+import UserAPI from "./UserAPI.tsx";
 
 async function findAll(page: number, size: number, accessToken: string) {
     try {
@@ -78,4 +81,23 @@ async function findAllByPizzaId(id: number) {
     }
 }
 
-export default { findAll, findAllByType, findById, findByUrl, findAllByPizzaId, findByUserId };
+async function findLoggedInUserProfilePicture() {
+    const token = await StorageAPI.getAccessTokenFromLocalStorage();
+    let decodedToken = null;
+
+    if (token != null) {
+        decodedToken = jwtDecode(token);
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const user = await UserAPI.findByUsername(decodedToken.sub, token);
+
+        const response = await findById(user.data.userDTO.image.imageId);
+
+        return response.data.base64EncodedImage;
+    }
+
+    return undefined;
+}
+
+export default { findAll, findAllByType, findById, findByUrl, findAllByPizzaId, findByUserId, findLoggedInUserProfilePicture };

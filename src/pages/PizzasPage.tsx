@@ -15,6 +15,7 @@ const PizzasPage = () => {
     const [pizzas, setPizzas] = useState<PizzaModel[]>([]);
     const [page, setPage] = useState(0);
     const [numberOfPages, setNumberOfPages] = useState(0);
+
     const [loggedInUser, setLoggedInUser] = useState<UserModel | undefined>(undefined);
     const [loggedInUserBasket, setLoggedInUserBasket] = useState<BasketModel | undefined>(undefined);
     const [loggedInUserProfilePicture, setLoggedInUserProfilePicture] = useState('');
@@ -23,30 +24,25 @@ const PizzasPage = () => {
         setPage(newPage);
     }
 
-    const updateBasket = (newBasket: BasketModel | undefined) => {
-        setLoggedInUserBasket(newBasket);
-    }
-
     useEffect(() => {
-        async function fetchUserData() {
-            try {
-                const userResponse = await UserAPI.findLoggedInUser();
-                setLoggedInUser(userResponse);
-
-                // @ts-ignore
-                const imageResponse = await ImageAPI.findByUserId(userResponse.userId);
-                setLoggedInUserProfilePicture(imageResponse.data.base64EncodedImage);
-
-                const basketResponse = await BasketAPI.findLoggedInUserBasket();
-                setLoggedInUserBasket(basketResponse);
-            }
-
-            catch (error) {
-                console.error(error);
-            }
+        async function fetchUser() {
+            const userResponse = await UserAPI.findLoggedInUser();
+            setLoggedInUser(userResponse);
         }
 
-        fetchUserData();
+        async function fetchImage() {
+            const imageResponse = await ImageAPI.findLoggedInUserProfilePicture();
+            setLoggedInUserProfilePicture(imageResponse);
+        }
+
+        async function fetchBasket() {
+            const basketResponse = await BasketAPI.findLoggedInUserBasket();
+            setLoggedInUserBasket(basketResponse);
+        }
+
+        fetchUser();
+        fetchImage();
+        fetchBasket();
     }, []);
 
     useEffect(() => {
@@ -64,7 +60,7 @@ const PizzasPage = () => {
         <>
             <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket} />
             <PizzaHeader />
-            <PizzasSection numberOfPages={numberOfPages} updatePage={updatePage} pizzas={pizzas} page={page} loggedInUser={loggedInUser} loggedInUserBasket={loggedInUserBasket} updateBasket={updateBasket}/>
+            <PizzasSection numberOfPages={numberOfPages} updatePage={updatePage} pizzas={pizzas} page={page}/>
             <Footer />
         </>
     );

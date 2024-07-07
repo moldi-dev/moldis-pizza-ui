@@ -7,7 +7,7 @@ interface PizzaOrderItemProps {
 }
 
 const PizzaOrderItem: React.FC<PizzaOrderItemProps> = ({ pizza }) => {
-    const [pizzaImage, setPizzaImage] = useState<string>();
+    const [pizzaImage, setPizzaImage] = useState('');
 
     useEffect(() => {
         async function fetchPizzaImage() {
@@ -25,7 +25,10 @@ const PizzaOrderItem: React.FC<PizzaOrderItemProps> = ({ pizza }) => {
 
     return (
         <>
-            <img src={`data:image/jpeg;base64,${pizzaImage}`} alt="delicious pizza" width={200} height={200}
+            <img src={`data:image/jpeg;base64,${pizzaImage}`}
+                 alt="delicious pizza"
+                 width={200}
+                 height={200}
                  className="rounded-md"/>
             <div>
                 <h3 className="font-semibold">{pizza.name}</h3>
