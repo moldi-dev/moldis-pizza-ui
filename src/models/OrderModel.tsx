@@ -2,7 +2,7 @@ import UserModel from "./UserModel.tsx";
 import PizzaModel from "./PizzaModel.tsx";
 
 interface OrderModel {
-    orderId: number,
+    orderId: string,
     user: UserModel,
     pizzas: PizzaModel[],
     totalPrice: number,

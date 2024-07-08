@@ -1,47 +1,36 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {CircleXIcon} from "lucide-react";
-import OrderModel from "../models/OrderModel.tsx";
-import StorageAPI from "../apis/StorageAPI.tsx";
-import axios from "axios";
-
-const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-};
+import UserModel from "../models/UserModel.tsx";
+import UserAPI from "../apis/UserAPI.tsx";
 
 const PaymentCancelPage = () => {
-    const query = useQuery();
-    const id = query.get('id');
     const navigate = useNavigate();
 
-    const orderId = id ? parseInt(id, 10) : undefined;
-
-    const [order, setOrder] = useState<OrderModel | undefined>(undefined);
+    const [loggedInUser, setLoggedInUser] = useState<UserModel | undefined>(undefined);
 
     useEffect(() => {
-        async function fetchOrderData() {
+        async function fetchLoggedInUser() {
             try {
-                const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
+                const response = await UserAPI.findLoggedInUser();
 
-                const orderResponse = await axios.get(`http://localhost:8080/api/v1/orders/id=${orderId}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    }
-                });
+                if (!response) {
+                    navigate("/not-found");
+                }
 
-                setOrder(orderResponse.data.data.orderDTO);
+                setLoggedInUser(response);
             }
 
             catch (error) {
                 console.log(error);
 
-                if (error.response && (error.response.status == 404 || error.response.status == 500 || error.response.status == 403 || error.response.status == 401)) {
+                if (error.response) {
                     navigate("/not-found");
                 }
             }
         }
 
-        fetchOrderData();
+        fetchLoggedInUser();
     }, []);
 
     return (

@@ -15,7 +15,7 @@ const PaymentSuccessPage = () => {
     const id = query.get('id');
     const navigate = useNavigate();
 
-    const orderId = id ? parseInt(id, 10) : undefined;
+    const orderId = id ? id : undefined;
 
     const [order, setOrder] = useState<OrderModel | undefined>(undefined);
 
@@ -69,10 +69,6 @@ const PaymentSuccessPage = () => {
                                     <CardTitle>Order Details</CardTitle>
                                 </CardHeader>
                                 <CardContent className="grid gap-4">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Order Number:</span>
-                                        <span className="font-medium">{order.orderId}</span>
-                                    </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-muted-foreground">Order Date:</span>
                                         <span className="font-medium">{new Date(order.createdDate).toLocaleDateString()}</span>
