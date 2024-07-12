@@ -38,6 +38,7 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
     const [comment, setComment] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < numberOfPages) {
@@ -56,7 +57,6 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
                 comment,
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`
                 }
             });
@@ -74,10 +74,18 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
         catch (error) {
             console.log(error);
 
-            if (error.response) {
-                setErrorMessage(error.response.data.message);
-                setTimeout(() => setErrorMessage(''), 4000);
+            if (error.response && error.response.status == 400) {
+                setValidationErrors(error.response.data.data.validationErrors);
             }
+
+            else if (error.response) {
+                setErrorMessage(error.response.data.message);
+            }
+
+            setTimeout(() => {
+                setErrorMessage('');
+                setValidationErrors([]);
+            }, 4000);
         }
     }
 
@@ -136,6 +144,13 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
                         {errorMessage && (
                             <AlertDestructive description={errorMessage} title="Error" />
                         )}
+                        {validationErrors.length > 0 && validationErrors.map((error, index) => (
+                            <AlertDestructive
+                                key={index}
+                                title="Error"
+                                description={error}
+                            />
+                        ))}
                     </CardHeader>
                     <CardContent>
                         <form className="grid gap-4">

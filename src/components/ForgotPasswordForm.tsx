@@ -5,18 +5,25 @@ import {Label} from "./ui/label.tsx";
 import {Input} from "./ui/input.tsx";
 import {Button} from "./ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "./ui/alert.tsx";
-import {AlertCircle} from "lucide-react";
+import {AlertCircle, Eye, EyeOff} from "lucide-react";
 import axios from "axios";
 import {Textarea} from "./ui/textarea.tsx";
 import {Link} from "react-router-dom";
+import {Simulate} from "react-dom/test-utils";
 
 const ForgotPasswordForm = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
+    const [validationErrors, setValidationErrors] = useState([]);
+
     const [email, setEmail] = useState('');
-    const [resetCode, setResetCode] = useState('');
-    const [password, setPassword] = useState('');
+    const [resetPasswordCode, setResetPasswordCode] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [isPasswordReset, setIsPasswordReset] = useState(false);
@@ -25,7 +32,9 @@ const ForgotPasswordForm = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(`http://localhost:8080/api/v1/users/send-reset-password-token/email=${email}`);
+            const response = await axios.post(`http://localhost:8080/api/v1/users/send-reset-password-token`, {
+                email
+            });
 
             setSuccessMessage(response.data.message);
             setIsEmailSent(true);
@@ -38,12 +47,17 @@ const ForgotPasswordForm = () => {
         catch (error) {
             console.log(error);
 
-            if (error.response) {
+            if (error.response && error.response.status == 400) {
+                setValidationErrors(error.response.data.data.validationErrors);
+            }
+
+            else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
             setTimeout(() => {
                 setErrorMessage('');
+                setValidationErrors([]);
             }, 4000);
         }
     }
@@ -51,44 +65,11 @@ const ForgotPasswordForm = () => {
     const handleSubmitResetPassword = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
-        if (!resetCode) {
-            setErrorMessage('The password reset code is required');
-
-            setTimeout(() => {
-                setErrorMessage('');
-            }, 4000);
-
-            return;
-        }
-
-        else if (!password) {
-            setErrorMessage('The password is required');
-
-            setTimeout(() => {
-                setErrorMessage('');
-            }, 4000);
-
-            return;
-        }
-
-        else if (password.length < 8) {
-            setErrorMessage('The password must be at least 8 characters long');
-
-            setTimeout(() => {
-                setErrorMessage('');
-            }, 4000);
-
-            return;
-        }
-
         try {
-            const response = await axios.post(
-                `http://localhost:8080/api/v1/users/reset-password/reset-password-token=${resetCode}`,
-                password,
-                {
-                    headers: {
-                        'Content-Type': 'text/plain'
-                    }
+            const response = await axios.post(`http://localhost:8080/api/v1/users/reset-password`, {
+                    resetPasswordCode,
+                    newPassword,
+                    confirmNewPassword
                 }
             );
 
@@ -103,14 +84,27 @@ const ForgotPasswordForm = () => {
         catch (error) {
             console.log(error);
 
-            if (error.response) {
+            if (error.response && error.response.status == 400) {
+                setValidationErrors(error.response.data.data.validationErrors);
+            }
+
+            else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
             setTimeout(() => {
                 setErrorMessage('');
+                setValidationErrors([]);
             }, 4000);
         }
+    }
+
+    const toggleNewPasswordVisibility = () => {
+        setShowNewPassword(!showNewPassword);
+    }
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     }
 
     return (
@@ -131,6 +125,13 @@ const ForgotPasswordForm = () => {
                     {errorMessage && (
                         <AlertDestructive description={errorMessage} title="Error" />
                     )}
+                    {validationErrors.length > 0 && validationErrors.map((error, index) => (
+                        <AlertDestructive
+                            key={index}
+                            title="Error"
+                            description={error}
+                        />
+                    ))}
                 </CardHeader>
                 <CardContent>
                     {!isEmailSent ? (
@@ -158,19 +159,39 @@ const ForgotPasswordForm = () => {
                                         id="code"
                                         rows={2}
                                         placeholder="Your password reset code sent on your email"
-                                        onChange={e => setResetCode(e.target.value)}
+                                        onChange={e => setResetPasswordCode(e.target.value)}
                                         required
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">New password</Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        placeholder="Your new password"
-                                        onChange={e => setPassword(e.target.value)}
-                                        required
-                                    />
+                                    <Label htmlFor="newPassword">New password</Label>
+                                    <div className="relative">
+                                        <Input
+                                            id="newPassword"
+                                            type={showNewPassword ? "text" : "password"}
+                                            placeholder="Your password"
+                                            onChange={e => setNewPassword(e.target.value)}
+                                            required/>
+                                        <span onClick={toggleNewPasswordVisibility}
+                                              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showNewPassword ? <Eye/> : <EyeOff/>}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="confirmPassword">Confirm new password</Label>
+                                    <div className="relative">
+                                        <Input
+                                            id="confirmPassword"
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            placeholder="Your password"
+                                            onChange={e => setConfirmNewPassword(e.target.value)}
+                                            required/>
+                                        <span onClick={toggleConfirmPasswordVisibility}
+                                              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showConfirmPassword ? <Eye/> : <EyeOff/>}
+                                        </span>
+                                    </div>
                                 </div>
                                 <Button type="submit" onClick={handleSubmitResetPassword} className="w-full">
                                     Reset your password
@@ -185,7 +206,7 @@ const ForgotPasswordForm = () => {
                             </div>
                         ) : (
                             <Link to="/sign-in">
-                                <Button className="w-full outline">
+                            <Button className="w-full outline">
                                     Go to sign in
                                 </Button>
                             </Link>

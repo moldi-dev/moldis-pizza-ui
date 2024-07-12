@@ -11,6 +11,8 @@ import PizzaPage from "./pages/PizzaPage.tsx";
 import CheckoutPage from "./pages/CheckoutPage.tsx";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage.tsx";
 import PaymentCancelPage from "./pages/PaymentCancelPage.tsx";
+import AdminPanelPage from "./pages/AdminPanelPage.tsx";
+import 'react-toastify/dist/ReactToastify.css';
 
 const ScrollToTop = () => {
     const { pathname } = useLocation();
@@ -37,9 +39,10 @@ function App() {
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/" element={<Navigate to="/pizzas" />} />
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                  <Route path="/pizza" element={<PizzaPage /> } />
+                  <Route path="/pizza/:id" element={<PizzaPage /> } />
                   <Route path="/payment-success" element={<PaymentSuccessPage />} />
                   <Route path="/payment-cancel" element={<PaymentCancelPage />} />
+                  <Route path="/admin-panel/:panel" element={<AdminPanelPage />} />
                   <Route path="*" element={<NotFoundPage />} />
               </Routes>
           </BrowserRouter>

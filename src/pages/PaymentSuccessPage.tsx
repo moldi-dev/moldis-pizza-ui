@@ -30,6 +30,8 @@ const PaymentSuccessPage = () => {
                     }
                 });
 
+                console.log('ORDER RESPONSE: ' + JSON.stringify(orderResponse, null, '\t'));
+
                 const orderResponse2 = await axios.patch(`http://localhost:8080/api/v1/orders/set-paid/id=${orderId}`, {}, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,

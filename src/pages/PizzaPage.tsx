@@ -8,17 +8,13 @@ import BasketAPI from "../apis/BasketAPI.tsx";
 import Navbar from "../components/Navbar.tsx";
 import Footer from "../components/Footer.tsx";
 import PizzaDetails from "../components/PizzaDetails.tsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import ReviewModel from "../models/ReviewModel.tsx";
 import ReviewAPI from "../apis/ReviewAPI.tsx";
 import ReviewsSection from "../components/ReviewsSection.tsx";
 import {Separator} from "../components/ui/separator.tsx";
 import StorageAPI from "../apis/StorageAPI.tsx";
-
-const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-};
 
 const PizzaPage = () => {
     const [loggedInUser, setLoggedInUser] = useState<UserModel | undefined>(undefined);
@@ -33,8 +29,7 @@ const PizzaPage = () => {
     const [page, setPage] = useState(0);
     const [numberOfPages, setNumberOfPages] = useState(0);
 
-    const query = useQuery();
-    const id = query.get('id');
+    const { id } = useParams();
 
     const navigate = useNavigate();
 

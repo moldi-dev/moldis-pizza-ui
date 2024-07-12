@@ -29,16 +29,19 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
     const [password, setPassword] = useState<string>('');
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
 
     const [errorMessage, setErrorMessage] = useState('');
     const [errorMessage2, setErrorMessage2] = useState('');
     const [validationErrors, setValidationErrors] = useState([]);
+    const [validationErrors2, setValidationErrors2] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
     const [successMessage2, setSuccessMessage2] = useState('');
 
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
     const [user, setUser] = useState<UserModel | undefined>(loggedInUser);
     const [image, setImage] = useState<string>(loggedInUserProfilePicture);
@@ -67,48 +70,22 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
         setShowPassword(!showPassword);
     }
 
+    const toggleConfirmNewPasswordVisibility = () => {
+        setShowConfirmNewPassword(!showConfirmNewPassword);
+    }
+
     const handleChangePassword = async (e: {preventDefault: () => void; }) => {
         e.preventDefault();
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
-
-        if (!currentPassword) {
-            setErrorMessage2('The current password is required');
-
-            setTimeout(() => {
-                setErrorMessage2('');
-            }, 4000);
-
-            return;
-        }
-
-        else if (!newPassword) {
-            setErrorMessage2('The new password is required')
-
-            setTimeout(() => {
-                setErrorMessage2('');
-            }, 4000);
-
-            return;
-        }
-
-        else if (newPassword.length < 8) {
-            setErrorMessage2('The new password must be at least 8 characters long')
-
-            setTimeout(() => {
-                setErrorMessage2('');
-            }, 4000);
-
-            return;
-        }
 
         try {
             const response = await axios.post(
                 `http://localhost:8080/api/v1/users/change-password/id=${loggedInUser?.userId}`, {
                 currentPassword,
-                newPassword
+                newPassword,
+                confirmNewPassword
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`
                 }
             });
@@ -123,13 +100,18 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
         catch (error) {
             console.log(error);
 
-            if (error.response) {
-                setErrorMessage2(error.response.data.message);
-
-                setTimeout(() => {
-                    setErrorMessage2('');
-                }, 4000);
+            if (error.response && error.response.status == 400) {
+                setValidationErrors2(error.response.data.data.validationErrors);
             }
+
+            else if (error.response) {
+                setErrorMessage2(error.response.data.message);
+            }
+
+            setTimeout(() => {
+                setErrorMessage2('');
+                setValidationErrors2([]);
+            }, 4000);
         }
     }
 
@@ -222,7 +204,7 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
         }
     }
 
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    const handleUpdateProfileDetails = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
@@ -364,7 +346,7 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button className="ml-auto" onClick={handleSubmit}>Save Changes</Button>
+                            <Button className="ml-auto" onClick={handleUpdateProfileDetails}>Save Changes</Button>
                         </CardFooter>
                     </Card>
                     <Card className="mb-10">
@@ -381,6 +363,13 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                             {errorMessage2 && (
                                 <AlertDestructive description={errorMessage2} title="Error" />
                             )}
+                            {validationErrors2.length > 0 && validationErrors2.map((error, index) => (
+                                <AlertDestructive
+                                    key={index}
+                                    title="Error"
+                                    description={error}
+                                />
+                            ))}
                         </CardHeader>
                         <CardContent className="grid gap-4">
                             <div className="grid gap-2">
@@ -392,8 +381,9 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                                         placeholder="Enter your current password"
                                         onChange={e => setCurrentPassword(e.target.value)}
                                     />
-                                    <span onClick={toggleCurrentPasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
-                                            {showCurrentPassword ? <Eye /> : <EyeOff />}
+                                    <span onClick={toggleCurrentPasswordVisibility}
+                                          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showCurrentPassword ? <Eye/> : <EyeOff/>}
                                     </span>
                                 </div>
                             </div>
@@ -409,6 +399,21 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                                     <span onClick={toggleNewPasswordVisibility}
                                           className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
                                             {showNewPassword ? <Eye/> : <EyeOff/>}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="confirmNewPassword">Confirm New Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="confirmNewPassword"
+                                        type={showConfirmNewPassword ? "text" : "password"}
+                                        placeholder="Confirm your new password"
+                                        onChange={e => setConfirmNewPassword(e.target.value)}
+                                    />
+                                    <span onClick={toggleConfirmNewPasswordVisibility}
+                                          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showConfirmNewPassword ? <Eye/> : <EyeOff/>}
                                     </span>
                                 </div>
                             </div>

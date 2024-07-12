@@ -31,7 +31,7 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
         }
     }
 
-    const handlePayOrder = async (orderId: number) => {
+    const handlePayOrder = async (orderId: string) => {
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
         try {

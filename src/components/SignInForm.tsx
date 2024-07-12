@@ -16,6 +16,8 @@ const SignInForm = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
     const [showPassword, setShowPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
@@ -59,16 +61,17 @@ const SignInForm = () => {
         catch (error) {
             console.log(error);
 
-            if (error.response && (error.response.status === 404 || error.response.status === 401 || error.response.status === 403)) {
-                setErrorMessage(error.response.data.message);
+            if (error.response && error.response.data.status === 'BAD_REQUEST') {
+                setValidationErrors(error.response.data.data.validationErrors);
             }
 
-            else {
-                setErrorMessage('An unexpected error occurred, please try again later');
+            else if (error.response) {
+                setErrorMessage(error.response.data.message);
             }
 
             setTimeout(() => {
                 setErrorMessage('');
+                setValidationErrors([]);
             }, 4000);
         }
     };
@@ -84,6 +87,13 @@ const SignInForm = () => {
                     {errorMessage && (
                         <AlertDestructive description={errorMessage} title="Error" />
                     )}
+                    {validationErrors.length > 0 && validationErrors.map((error, index) => (
+                        <AlertDestructive
+                            key={index}
+                            title="Error"
+                            description={error}
+                        />
+                    ))}
                 </CardHeader>
                 <CardContent>
                     <div className="grid gap-4">

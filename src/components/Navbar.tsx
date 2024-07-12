@@ -12,16 +12,7 @@ import {
 } from "./ui/dropdown-menu.tsx";
 import {Button} from "./ui/button.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "./ui/avatar.tsx";
-import {
-    CircleAlertIcon,
-    CircleCheckIcon,
-    CreditCard,
-    LogOut,
-    PizzaIcon,
-    ShoppingCart,
-    Trash2,
-    User
-} from "lucide-react";
+import {CircleAlertIcon, CreditCard, LogOut, PizzaIcon, ShoppingCart, Trash2, User, UserRound} from "lucide-react";
 import {Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "./ui/sheet.tsx";
 import PizzaInBasketCard from "./PizzaInBasketCard.tsx";
 import PizzaModel from "../models/PizzaModel.tsx";
@@ -29,8 +20,9 @@ import {Separator} from "./ui/separator.tsx";
 import BasketAPI from "../apis/BasketAPI.tsx";
 import React, {useEffect, useState} from "react";
 import StorageAPI from "../apis/StorageAPI.tsx";
-import OrderAPI from "../apis/OrderAPI.tsx";
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "./ui/dialog.tsx";
+import axios from "axios";
+import UserAPI from "../apis/UserAPI.tsx";
 
 interface NavbarProps {
     loggedInUser: UserModel | undefined;
@@ -44,6 +36,8 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
     const [basket, setBasket] = useState<BasketModel | undefined>(loggedInUserBasket);
     const [error, setError] = useState(false);
 
+    const [isAdmin, setIsAdmin] = useState(false);
+
     const location = useLocation();
     const isOnCheckoutPage: boolean = location.pathname === '/checkout';
 
@@ -52,6 +46,32 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
             setBasket(loggedInUserBasket);
         }
     }, [loggedInUserBasket]);
+
+    useEffect(() => {
+        async function testIfAdmin() {
+            try {
+                const userResponse = await UserAPI.findLoggedInUser();
+
+                const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
+
+                const response2 = await axios.get(`http://localhost:8080/api/v1/users/admin/id=${userResponse.userId}`, {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                });
+
+                setIsAdmin(response2.data.data.answer);
+            }
+
+            catch (error) {
+                setIsAdmin(false);
+            }
+        }
+
+        testIfAdmin();
+    }, []);
+
+    const handleGoToAdminPanel = () => {
+        navigate("/admin-panel/users");
+    }
 
     const handleRemovePizzaFromBasket = async (pizzaId: number) => {
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
@@ -149,6 +169,12 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
                                     </Link>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator/>
+                                {isAdmin &&
+                                    <DropdownMenuItem onClick={handleGoToAdminPanel}>
+                                        <UserRound className="mr-2 h-4 w-4"/>
+                                        <span>Admin Panel</span>
+                                    </DropdownMenuItem>
+                                }
                                 <DropdownMenuItem onClick={handleSignOut}>
                                     <LogOut className="mr-2 h-4 w-4"/>
                                     <span>Sign out</span>

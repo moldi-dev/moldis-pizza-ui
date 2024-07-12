@@ -71,26 +71,6 @@ const SignUpForm = () => {
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
-        if (!confirmPassword) {
-            setErrorMessage('The password confirmation is required');
-
-            setTimeout(() => {
-                setErrorMessage('');
-            }, 4000);
-
-            return;
-        }
-
-        else if (confirmPassword != password) {
-            setErrorMessage('The passwords do not match');
-
-            setTimeout(() => {
-                setErrorMessage('');
-            }, 4000);
-
-            return;
-        }
-
         try {
             const response = await axios.post('http://localhost:8080/api/v1/authentication/sign-up', {
                 username,
@@ -98,8 +78,9 @@ const SignUpForm = () => {
                 lastName,
                 email,
                 address,
-                password
-            })
+                password,
+                confirmPassword
+            });
 
             setSuccessMessage(response.data.message);
             setHasRegistrationSucceeded(true);
@@ -116,12 +97,8 @@ const SignUpForm = () => {
                 setValidationErrors(error.response.data.data.validationErrors);
             }
 
-            else if (error.response && error.response.status == 409) {
-                setErrorMessage(error.response.data.message);
-            }
-
             else if (error.response) {
-                setErrorMessage('An unexpected error has occurred. Please try again later!');
+                setErrorMessage(error.response.data.message);
             }
 
             setTimeout(() => {
