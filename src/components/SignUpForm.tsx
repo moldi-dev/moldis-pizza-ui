@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "./ui/card.tsx";
 import {Label} from "./ui/label.tsx";
 import {Input} from "./ui/input.tsx";
@@ -21,8 +21,10 @@ const SignUpForm = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [validationErrors, setValidationErrors] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
 
     const [hasRegistrationSucceeded, setHasRegistrationSucceeded] = useState(false);
+    const [hasVerificationSucceeded, setHasVerificationSucceeded] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -68,7 +70,7 @@ const SignUpForm = () => {
         }
     }
 
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    const handleCreateAccount = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         try {
@@ -84,6 +86,40 @@ const SignUpForm = () => {
 
             setSuccessMessage(response.data.message);
             setHasRegistrationSucceeded(true);
+
+            setTimeout(() => {
+                setSuccessMessage('');
+            }, 4000);
+        }
+
+        catch (error) {
+            console.log(error);
+
+            if (error.response && error.response.status == 400) {
+                setValidationErrors(error.response.data.data.validationErrors);
+            }
+
+            else if (error.response) {
+                setErrorMessage(error.response.data.message);
+            }
+
+            setTimeout(() => {
+                setErrorMessage('');
+                setValidationErrors([]);
+            }, 4000);
+        }
+    }
+
+    const handleActivateAccount = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.patch('http://localhost:8080/api/v1/users/verify', {
+                verificationCode
+            });
+
+            setSuccessMessage(response.data.message);
+            setHasVerificationSucceeded(true);
 
             setTimeout(() => {
                 setSuccessMessage('');
@@ -216,7 +252,7 @@ const SignUpForm = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <Button type="submit" className="w-full" onClick={handleSubmit}>
+                                <Button type="submit" className="w-full" onClick={handleCreateAccount}>
                                     Sign up
                                 </Button>
                             </div>
@@ -228,22 +264,39 @@ const SignUpForm = () => {
                             </div>
                         </>
                     }
-                    {hasRegistrationSucceeded &&
+
+                    {hasRegistrationSucceeded && !hasVerificationSucceeded &&
                         <>
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Link to="/sign-in" className="underline">
-                                        <Button type="submit" className="w-full">
-                                            Account verified? Back to sign in
-                                        </Button>
-                                    </Link>
+                                    <Label htmlFor="verificationCode">Verification Code</Label>
+                                    <Textarea id="verificationCode" placeholder="Your verification code" onChange={e => setVerificationCode(e.target.value)}/>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Button onClick={handleActivateAccount} className="w-full">
+                                        Activate your account
+                                    </Button>
                                 </div>
                             </div>
                             <div className="mt-4 text-center text-sm">
-                                Didn't receive the confirmation email?{" "}
+                                Didn't receive the verification code at the previous step?{" "}
                                 <p onClick={e => handleResendConfirmationEmail(email)} className="underline hover:cursor-pointer">
-                                    Resend the confirmation email
+                                    Resend the verification code to your email
                                 </p>
+                            </div>
+                        </>
+                    }
+
+                    {hasRegistrationSucceeded && hasVerificationSucceeded &&
+                        <>
+                            <div className="grid gap-4">
+                                <div className="grid gap-2">
+                                   <Link to="/sign-in">
+                                       <Button type="submit" className="w-full">
+                                           Back to sign in
+                                       </Button>
+                                   </Link>
+                                </div>
                             </div>
                         </>
                     }

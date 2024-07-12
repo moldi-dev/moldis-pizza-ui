@@ -5,6 +5,7 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import OrderModel from "../models/OrderModel.tsx";
 import StorageAPI from "../apis/StorageAPI.tsx";
+import {Separator} from "../components/ui/separator.tsx";
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -73,11 +74,23 @@ const PaymentSuccessPage = () => {
                                 <CardContent className="grid gap-4">
                                     <div className="flex items-center justify-between">
                                         <span className="text-muted-foreground">Order Date:</span>
-                                        <span className="font-medium">{new Date(order.createdDate).toLocaleDateString()}</span>
+                                        <span
+                                            className="font-medium">{new Date(order.createdDate).toLocaleDateString()}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-muted-foreground">Total:</span>
                                         <span className="font-medium">${order.totalPrice.toFixed(2)}</span>
+                                    </div>
+                                    <Separator/>
+                                    {order.pizzas.map((pizza, index) => (
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-medium">{pizza.name}</span>
+                                            <span className="font-medium">${pizza.price.toFixed(2)}</span>
+                                        </div>
+                                    ))}
+                                    <Separator/>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">Your order's details were sent on your email!</span>
                                     </div>
                                 </CardContent>
                             </Card>
