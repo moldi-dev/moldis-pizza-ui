@@ -24,7 +24,7 @@ interface OrdersTableProps {
     page: number;
 }
 
-const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberOfPages, updatePage, page }) => {
+const OrdersSection: React.FC<OrdersTableProps> = ({loggedInUserOrders, numberOfPages, updatePage, page}) => {
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < numberOfPages) {
             updatePage(newPage);
@@ -37,16 +37,14 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
         try {
             const response = await axios.post(`http://localhost:8080/api/v1/orders/pay-pending-order/id=${orderId}`, {}, {
                 headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    }
+                    Authorization: `Bearer ${accessToken}`,
+                }
             });
 
             if (response.data.developerMessage) {
                 window.location.href = response.data.developerMessage;
             }
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
@@ -55,65 +53,69 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
         <>
             {/* Display the orders if any exists  */}
             {loggedInUserOrders != undefined &&
-            <div className="container mx-auto py-8">
-                <h1 className="text-3xl text-center font-bold mb-6">Your Orders</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {loggedInUserOrders && loggedInUserOrders.map((order, index) => (
-                        <Card key={index} className="shadow-lg">
-                            <CardHeader className="bg-primary text-primary-foreground p-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="font-semibold">Order #{index + 1}</span>
-                                    <span className="text-sm">{new Date(order.createdDate).toLocaleDateString()}</span>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="p-4">
-                                <div className="mb-4">
-                                    {order.status == 'PENDING' ? <Badge className="font-semibold">{order.status}</Badge> : <Badge variant="outline" className="text-red-500">{order.status}</Badge>}
-                                </div>
-                                <div className="space-y-4">
-                                    {order.pizzas.map((pizza, index) => (
-                                        <div key={index} className="flex items-center gap-4">
-                                            <PizzaOrderItem pizza={pizza} />
-                                        </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                            <CardFooter className="bg-muted p-4">
-                                <div className="flex justify-between items-end">
-                                    {order.status === 'PENDING' && (
-                                        <Button className="justify-between items-start" onClick={() => handlePayOrder(order.orderId)}>
-                                            Pay ${order.totalPrice.toFixed(2)}
-                                        </Button>
-                                    )}
+                <div className="container mx-auto py-8">
+                    <h1 className="text-3xl text-center font-bold mb-6">Your Orders</h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {loggedInUserOrders && loggedInUserOrders.map((order, index) => (
+                            <Card key={index} className="shadow-lg">
+                                <CardHeader className="bg-primary text-primary-foreground p-4">
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-semibold">Order #{index + 1}</span>
+                                        <span
+                                            className="text-sm">{new Date(order.createdDate).toLocaleDateString()}</span>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="p-4">
+                                    <div className="mb-4">
+                                        {order.status == 'PENDING' ?
+                                            <Badge className="font-semibold">{order.status}</Badge> :
+                                            <Badge variant="outline" className="text-red-500">{order.status}</Badge>}
+                                    </div>
+                                    <div className="space-y-4">
+                                        {order.pizzas.map((pizza, index) => (
+                                            <div key={index} className="flex items-center gap-4">
+                                                <PizzaOrderItem pizza={pizza}/>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                                <CardFooter className="bg-muted p-4">
+                                    <div className="flex justify-between items-end">
+                                        {order.status === 'PENDING' && (
+                                            <Button className="justify-between items-start"
+                                                    onClick={() => handlePayOrder(order.orderId)}>
+                                                Pay ${order.totalPrice.toFixed(2)}
+                                            </Button>
+                                        )}
 
-                                    {order.status !== 'PENDING' && (
-                                        <div className="flex items-end">
-                                            Total paid: ${order.totalPrice.toFixed(2)}
-                                        </div>
-                                    )}
-                                </div>
-                            </CardFooter>
-                        </Card>
-                    ))}
+                                        {order.status !== 'PENDING' && (
+                                            <div className="flex items-end">
+                                                Total paid: ${order.totalPrice.toFixed(2)}
+                                            </div>
+                                        )}
+                                    </div>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                    </div>
+                    <Pagination className="mt-5">
+                        <PaginationContent>
+                            {page > 0 && (
+                                <PaginationItem>
+                                    <PaginationPrevious onClick={() => handlePageChange(page - 1)}/>
+                                </PaginationItem>
+                            )}
+                            <PaginationItem>
+                                <PaginationLink isActive={true}>{page + 1}</PaginationLink>
+                            </PaginationItem>
+                            {page < numberOfPages - 1 && (
+                                <PaginationItem>
+                                    <PaginationNext onClick={() => handlePageChange(page + 1)}/>
+                                </PaginationItem>
+                            )}
+                        </PaginationContent>
+                    </Pagination>
                 </div>
-                <Pagination className="mt-5">
-                    <PaginationContent>
-                        {page > 0 && (
-                            <PaginationItem>
-                                <PaginationPrevious onClick={() => handlePageChange(page - 1)} />
-                            </PaginationItem>
-                        )}
-                        <PaginationItem>
-                            <PaginationLink isActive={true}>{page + 1}</PaginationLink>
-                        </PaginationItem>
-                        {page < numberOfPages - 1 && (
-                            <PaginationItem>
-                                <PaginationNext onClick={() => handlePageChange(page + 1)} />
-                            </PaginationItem>
-                        )}
-                    </PaginationContent>
-                </Pagination>
-            </div>
             }
 
             { /* Display a message if there aren't any orders placed */}
@@ -129,7 +131,8 @@ const OrdersSection: React.FC<OrdersTableProps> = ({ loggedInUserOrders, numberO
                         </h2>
                         <h2 className="text-muted-foreground">
                             We have a wide selection of delicious pizzas to choose from.
-                            Whether you're craving a classic Margherita or something more adventurous, we've got you covered.
+                            Whether you're craving a classic Margherita or something more adventurous, we've got you
+                            covered.
                         </h2>
                         <Link
                             to="/pizzas"

@@ -19,9 +19,7 @@ const PaymentCancelPage = () => {
                 }
 
                 setLoggedInUser(response);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
 
                 if (error.response) {

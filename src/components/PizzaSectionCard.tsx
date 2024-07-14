@@ -9,12 +9,12 @@ interface PizzaSectionCardProps {
     pizza: PizzaModel;
 }
 
-const PizzaSectionCard: React.FC<PizzaSectionCardProps> = ({ pizza }) => {
+const PizzaSectionCard: React.FC<PizzaSectionCardProps> = ({pizza}) => {
     const [pizzaImages, setPizzaImages] = useState<string[]>([]);
 
     useEffect(() => {
         async function fetchPizzaImages() {
-            const fetchedImages= new Array(pizza.images.length).fill('');
+            const fetchedImages = new Array(pizza.images.length).fill('');
 
             for (let index = 0; index < pizza.images.length; index++) {
                 const imageId = pizza.images[index].imageId;

@@ -13,9 +13,10 @@ import PaymentSuccessPage from "./pages/PaymentSuccessPage.tsx";
 import PaymentCancelPage from "./pages/PaymentCancelPage.tsx";
 import AdminPanelPage from "./pages/AdminPanelPage.tsx";
 import 'react-toastify/dist/ReactToastify.css';
+import CompleteRegistrationOAuth2UserPage from "./pages/CompleteRegistrationOAuth2UserPage.tsx";
 
 const ScrollToTop = () => {
-    const { pathname } = useLocation();
+    const {pathname} = useLocation();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -26,28 +27,29 @@ const ScrollToTop = () => {
 
 function App() {
 
-  return (
-      <>
-          <BrowserRouter>
-              <ScrollToTop />
-              <Routes>
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/sign-in" element={<SignInPage />} />
-                  <Route path="/sign-up" element={<SignUpPage />} />
-                  <Route path="/pizzas" element={<PizzasPage />} />
-                  <Route path="/orders" element={<OrdersPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/" element={<Navigate to="/pizzas" />} />
-                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                  <Route path="/pizza/:id" element={<PizzaPage /> } />
-                  <Route path="/payment-success" element={<PaymentSuccessPage />} />
-                  <Route path="/payment-cancel" element={<PaymentCancelPage />} />
-                  <Route path="/admin-panel/:panel" element={<AdminPanelPage />} />
-                  <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-          </BrowserRouter>
-      </>
-  )
+    return (
+        <>
+            <BrowserRouter>
+                <ScrollToTop/>
+                <Routes>
+                    <Route path="/checkout" element={<CheckoutPage/>}/>
+                    <Route path="/sign-in" element={<SignInPage/>}/>
+                    <Route path="/sign-up" element={<SignUpPage/>}/>
+                    <Route path="/complete-registration-oauth2-user" element={<CompleteRegistrationOAuth2UserPage/>}/>
+                    <Route path="/pizzas" element={<PizzasPage/>}/>
+                    <Route path="/orders" element={<OrdersPage/>}/>
+                    <Route path="/profile" element={<ProfilePage/>}/>
+                    <Route path="/" element={<Navigate to="/pizzas"/>}/>
+                    <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
+                    <Route path="/pizza/:id" element={<PizzaPage/>}/>
+                    <Route path="/payment-success" element={<PaymentSuccessPage/>}/>
+                    <Route path="/payment-cancel" element={<PaymentCancelPage/>}/>
+                    <Route path="/admin-panel/:panel" element={<AdminPanelPage/>}/>
+                    <Route path="*" element={<NotFoundPage/>}/>
+                </Routes>
+            </BrowserRouter>
+        </>
+    )
 }
 
 export default App

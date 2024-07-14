@@ -49,9 +49,10 @@ const CheckoutPage = () => {
 
     return (
         <>
-            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket} />
-            <CheckoutSection loggedInUser={loggedInUser} loggedInUserBasket={loggedInUserBasket} />
-            <Footer />
+            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}
+                    loggedInUserBasket={loggedInUserBasket}/>
+            <CheckoutSection loggedInUser={loggedInUser} loggedInUserBasket={loggedInUserBasket}/>
+            <Footer/>
         </>
     );
 };

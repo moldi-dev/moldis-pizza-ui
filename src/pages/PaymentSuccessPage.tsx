@@ -39,10 +39,9 @@ const PaymentSuccessPage = () => {
                     }
                 })
 
+                window.history.replaceState({}, document.title, window.location.pathname);
                 setOrder(orderResponse.data.data.orderDTO);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
 
                 if (error.response && (error.response.status == 404 || error.response.status == 500 || error.response.status == 403 || error.response.status == 401)) {

@@ -33,7 +33,18 @@ interface ReviewsComponentProps {
     numberOfPages: number;
 }
 
-const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numberOfPages, updateHasLoggedInUserReviewedThePizza, hasLoggedInUserBoughtThePizza, hasLoggedInUserReviewedThePizza, pizzaId, addReview, loggedInUser, reviews }) => {
+const ReviewsSection: React.FC<ReviewsComponentProps> = ({
+                                                             updatePage,
+                                                             page,
+                                                             numberOfPages,
+                                                             updateHasLoggedInUserReviewedThePizza,
+                                                             hasLoggedInUserBoughtThePizza,
+                                                             hasLoggedInUserReviewedThePizza,
+                                                             pizzaId,
+                                                             addReview,
+                                                             loggedInUser,
+                                                             reviews
+                                                         }) => {
     const [rating, setRating] = useState(1);
     const [comment, setComment] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -69,16 +80,12 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
             updateHasLoggedInUserReviewedThePizza(true);
 
             setTimeout(() => setSuccessMessage(''), 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -92,31 +99,31 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
     return (
         <>
             {reviews.length > 0 &&
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 sm:py-16 mt-5 mb-5">
-                <h2 className="text-2xl font-bold mb-6 text-center">Reviews</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {reviews.map((review, index) => (
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 sm:py-16 mt-5 mb-5">
+                    <h2 className="text-2xl font-bold mb-6 text-center">Reviews</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {reviews.map((review, index) => (
                             <ReviewCard review={review} key={index}/>
                         ))}
+                    </div>
+                    <Pagination className="mt-5">
+                        <PaginationContent>
+                            {page > 0 && (
+                                <PaginationItem>
+                                    <PaginationPrevious onClick={() => handlePageChange(page - 1)}/>
+                                </PaginationItem>
+                            )}
+                            <PaginationItem>
+                                <PaginationLink isActive={true}>{page + 1}</PaginationLink>
+                            </PaginationItem>
+                            {page < numberOfPages - 1 && (
+                                <PaginationItem>
+                                    <PaginationNext onClick={() => handlePageChange(page + 1)}/>
+                                </PaginationItem>
+                            )}
+                        </PaginationContent>
+                    </Pagination>
                 </div>
-                <Pagination className="mt-5">
-                    <PaginationContent>
-                        {page > 0 && (
-                            <PaginationItem>
-                                <PaginationPrevious onClick={() => handlePageChange(page - 1)} />
-                            </PaginationItem>
-                        )}
-                        <PaginationItem>
-                            <PaginationLink isActive={true}>{page + 1}</PaginationLink>
-                        </PaginationItem>
-                        {page < numberOfPages - 1 && (
-                            <PaginationItem>
-                                <PaginationNext onClick={() => handlePageChange(page + 1)} />
-                            </PaginationItem>
-                        )}
-                    </PaginationContent>
-                </Pagination>
-            </div>
             }
 
             {reviews.length == 0 &&
@@ -125,7 +132,8 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
                         <PizzaIcon className="w-8 h-8 text-primary-foreground"/>
                     </div>
                     <h3 className="text-xl font-semibold mb-2">No reviews yet for this pizza</h3>
-                    <p className="text-muted-foreground text-center">You'll be the first one to know when a review comes!</p>
+                    <p className="text-muted-foreground text-center">You'll be the first one to know when a review
+                        comes!</p>
                 </div>
             }
 
@@ -136,13 +144,13 @@ const ReviewsSection: React.FC<ReviewsComponentProps> = ({updatePage, page, numb
                         <CardDescription>Let us know what you think of our delicious pizza!</CardDescription>
                         {successMessage && (
                             <Alert variant="default">
-                                <AlertCircle className="h-4 w-4" />
+                                <AlertCircle className="h-4 w-4"/>
                                 <AlertTitle>Success</AlertTitle>
                                 <AlertDescription>{successMessage}</AlertDescription>
                             </Alert>
                         )}
                         {errorMessage && (
-                            <AlertDestructive description={errorMessage} title="Error" />
+                            <AlertDestructive description={errorMessage} title="Error"/>
                         )}
                         {validationErrors.length > 0 && validationErrors.map((error, index) => (
                             <AlertDestructive

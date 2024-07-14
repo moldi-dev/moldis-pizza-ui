@@ -6,7 +6,7 @@ interface AdminPanelNavbarProps {
     panel: string | undefined;
 }
 
-const AdminPanelNavbar: React.FC<AdminPanelNavbarProps> = ({ panel }) => {
+const AdminPanelNavbar: React.FC<AdminPanelNavbarProps> = ({panel}) => {
     return (
         <>
             <div className="flex flex-col border-b md:border-r bg-primary">

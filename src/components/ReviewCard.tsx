@@ -9,7 +9,7 @@ interface ReviewCardProps {
     review: ReviewModel
 }
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
+const ReviewCard: React.FC<ReviewCardProps> = ({review}) => {
     const [userImage, setUserImage] = useState<string | undefined>('');
 
     useEffect(() => {
@@ -17,9 +17,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/v1/images/id=${review.userDTO.image.imageId}`);
                 setUserImage(response.data.data.base64EncodedImage);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
             }
         }
@@ -33,11 +31,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
                 <CardContent className="space-y-4 mt-5">
                     <div className="flex items-center gap-4">
                         <Avatar>
-                            <AvatarImage src={`data:image/jpg;base64,${userImage}`} />
-                            <AvatarFallback>{review.userDTO.username.charAt(0).concat(review.userDTO.firstName.charAt(0)).toUpperCase()}</AvatarFallback>
+                            <AvatarImage src={`data:image/jpg;base64,${userImage}`}/>
+                            <AvatarFallback>{review.userDTO.lastName.charAt(0).concat(review.userDTO.firstName.charAt(0)).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <div className="font-semibold">{review.userDTO.lastName.concat(' ').concat(review.userDTO.firstName)}</div>
+                            <div
+                                className="font-semibold">{review.userDTO.lastName.concat(' ').concat(review.userDTO.firstName)}</div>
                             <div className="flex items-center gap-1 text-xs font-semibold">
                                 {[...Array(5)].map((_, index) => (
                                     <StarIcon

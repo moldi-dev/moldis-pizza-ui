@@ -12,6 +12,11 @@ import Footer from "../components/Footer.tsx";
 import PizzasSection from "../components/PizzasSection.tsx";
 
 const PizzasPage = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('accessToken');
+    const refreshToken = urlParams.get('refreshToken');
+    const rememberMeToken = urlParams.get('rememberMeToken');
+
     const [pizzas, setPizzas] = useState<PizzaModel[]>([]);
     const [page, setPage] = useState(0);
     const [numberOfPages, setNumberOfPages] = useState(0);
@@ -25,6 +30,14 @@ const PizzasPage = () => {
     }
 
     useEffect(() => {
+        if (accessToken && refreshToken && rememberMeToken) {
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('rememberMeToken', rememberMeToken);
+
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         async function fetchUser() {
             const userResponse = await UserAPI.findLoggedInUser();
             setLoggedInUser(userResponse);
@@ -58,10 +71,11 @@ const PizzasPage = () => {
 
     return (
         <>
-            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket} />
-            <PizzaHeader />
+            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}
+                    loggedInUserBasket={loggedInUserBasket}/>
+            <PizzaHeader/>
             <PizzasSection numberOfPages={numberOfPages} updatePage={updatePage} pizzas={pizzas} page={page}/>
-            <Footer />
+            <Footer/>
         </>
     );
 };

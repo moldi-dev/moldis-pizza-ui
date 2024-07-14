@@ -6,7 +6,7 @@ interface PizzaOrderItemProps {
     pizza: PizzaModel;
 }
 
-const PizzaOrderItem: React.FC<PizzaOrderItemProps> = ({ pizza }) => {
+const PizzaOrderItem: React.FC<PizzaOrderItemProps> = ({pizza}) => {
     const [pizzaImage, setPizzaImage] = useState('');
 
     useEffect(() => {

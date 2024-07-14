@@ -26,7 +26,7 @@ interface AdminPanelPizzasSectionProps {
     updatePage: (page: number) => void;
 }
 
-const AdminPanelPizzasSection: React.FC<AdminPanelPizzasSectionProps> = ({ pizzas, page, numberOfPages, updatePage }) => {
+const AdminPanelPizzasSection: React.FC<AdminPanelPizzasSectionProps> = ({pizzas, page, numberOfPages, updatePage}) => {
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -88,16 +88,12 @@ const AdminPanelPizzasSection: React.FC<AdminPanelPizzasSectionProps> = ({ pizza
 
             window.location.reload();
             setIsAddDialogOpen(false);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -118,7 +114,8 @@ const AdminPanelPizzasSection: React.FC<AdminPanelPizzasSectionProps> = ({ pizza
         <>
             {isAddDialogOpen &&
                 <Dialog open={isAddDialogOpen} onOpenChange={closeAddDialog}>
-                    <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-scroll" aria-describedby={undefined}>
+                    <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-scroll"
+                                   aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Add Pizza</DialogTitle>
                         </DialogHeader>
@@ -197,7 +194,7 @@ const AdminPanelPizzasSection: React.FC<AdminPanelPizzasSectionProps> = ({ pizza
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {pizzas.length > 0 && pizzas.map((pizza, index) => (
                         <div key={index}>
-                            <PizzaInAdminPanelCard index={index} pizza={pizza} />
+                            <PizzaInAdminPanelCard index={index} pizza={pizza}/>
                         </div>
                     ))}
                 </div>

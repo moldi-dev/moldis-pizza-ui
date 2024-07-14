@@ -28,7 +28,7 @@ interface AdminPanelUsersSectionProps {
     updatePage: (page: number) => void;
 }
 
-const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, page, numberOfPages, updatePage }) => {
+const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({users, page, numberOfPages, updatePage}) => {
 
     const [usersImages, setUsersImages] = useState<string[]>([]);
     const [isOpenAddDialog, setIsOpenAddDialog] = useState(false);
@@ -103,14 +103,12 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
                 address,
                 password
             }, {
-                headers: { Authorization: `Bearer ${accessToken}`}
+                headers: {Authorization: `Bearer ${accessToken}`}
             });
 
             window.location.reload();
             closeAddDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
@@ -130,7 +128,7 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
         try {
-            const updatedUser = { ...editingUser, username, email, firstName, lastName, address };
+            const updatedUser = {...editingUser, username, email, firstName, lastName, address};
 
             const response = await axios.patch(`http://localhost:8080/api/v1/users/admin/id=${userId}`, {
                 username,
@@ -139,14 +137,12 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
                 email,
                 address,
             }, {
-                headers: { Authorization: `Bearer ${accessToken}`}
+                headers: {Authorization: `Bearer ${accessToken}`}
             });
 
             window.location.reload();
             closeUpdateDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
             }
@@ -172,9 +168,7 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
 
             window.location.reload();
             closeDeleteDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
@@ -233,34 +227,37 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
                             </TableHeader>
                             <TableBody>
                                 {users.length > 0 && users.map((user, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="font-medium">{user.userId}</TableCell>
-                                            <TableCell>{user.username}</TableCell>
-                                            <TableCell>{user.lastName}</TableCell>
-                                            <TableCell>{user.firstName}</TableCell>
-                                            <TableCell>{user.email}</TableCell>
-                                            <TableCell>{user.address}</TableCell>
-                                            <TableCell>
-                                                <Avatar className="h-12 w-12 border-2 border-white">
-                                                    <AvatarImage src={`data:image/jpeg;base64,${usersImages[index]}`} alt="user avatar" />
-                                                    <AvatarFallback>{user.lastName.charAt(0).concat(user.firstName.charAt(0)).toUpperCase()}</AvatarFallback>
-                                                </Avatar>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon">
-                                                            <MoveHorizontalIcon className="w-4 h-4" />
-                                                            <span className="sr-only">Actions</span>
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem onClick={() => openUpdateDialog(user)}>Update</DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => openDeleteDialog(user)}>Delete</DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </TableCell>
-                                        </TableRow>
+                                    <TableRow key={index}>
+                                        <TableCell className="font-medium">{user.userId}</TableCell>
+                                        <TableCell>{user.username}</TableCell>
+                                        <TableCell>{user.lastName}</TableCell>
+                                        <TableCell>{user.firstName}</TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>{user.address}</TableCell>
+                                        <TableCell>
+                                            <Avatar className="h-12 w-12 border-2 border-white">
+                                                <AvatarImage src={`data:image/jpeg;base64,${usersImages[index]}`}
+                                                             alt="user avatar"/>
+                                                <AvatarFallback>{user.lastName.charAt(0).concat(user.firstName.charAt(0)).toUpperCase()}</AvatarFallback>
+                                            </Avatar>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon">
+                                                        <MoveHorizontalIcon className="w-4 h-4"/>
+                                                        <span className="sr-only">Actions</span>
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem
+                                                        onClick={() => openUpdateDialog(user)}>Update</DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() => openDeleteDialog(user)}>Delete</DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
@@ -270,7 +267,7 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
                             <PaginationContent>
                                 {page > 0 && (
                                     <PaginationItem>
-                                        <PaginationPrevious onClick={() => handlePageChange(page - 1)} />
+                                        <PaginationPrevious onClick={() => handlePageChange(page - 1)}/>
                                     </PaginationItem>
                                 )}
                                 <PaginationItem>
@@ -278,7 +275,7 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
                                 </PaginationItem>
                                 {page < numberOfPages - 1 && (
                                     <PaginationItem>
-                                        <PaginationNext onClick={() => handlePageChange(page + 1)} />
+                                        <PaginationNext onClick={() => handlePageChange(page + 1)}/>
                                     </PaginationItem>
                                 )}
                             </PaginationContent>
@@ -296,33 +293,39 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
                                         />
                                     ))}
                                     {errorMessage && (
-                                        <AlertDestructive description={errorMessage} title="Error" />
+                                        <AlertDestructive description={errorMessage} title="Error"/>
                                     )}
                                 </DialogHeader>
                                 <div className="grid gap-4 py-4">
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="username" className="text-right">Username</Label>
-                                        <Input id="username" className="col-span-3" onChange={e => setUsername(e.target.value)} />
+                                        <Input id="username" className="col-span-3"
+                                               onChange={e => setUsername(e.target.value)}/>
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="lastName" className="text-right">Last name</Label>
-                                        <Input id="lastName" onChange={e => setLastName(e.target.value)} className="col-span-3" />
+                                        <Input id="lastName" onChange={e => setLastName(e.target.value)}
+                                               className="col-span-3"/>
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="firstName" className="text-right">First name</Label>
-                                        <Input id="firstName" onChange={e => setFirstName(e.target.value)} className="col-span-3" />
+                                        <Input id="firstName" onChange={e => setFirstName(e.target.value)}
+                                               className="col-span-3"/>
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="email" className="text-right">Email</Label>
-                                        <Input id="email" className="col-span-3" onChange={e => setEmail(e.target.value)} />
+                                        <Input id="email" className="col-span-3"
+                                               onChange={e => setEmail(e.target.value)}/>
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="address" className="text-right">Address</Label>
-                                        <Input id="address" onChange={e => setAddress(e.target.value)} className="col-span-3" />
+                                        <Input id="address" onChange={e => setAddress(e.target.value)}
+                                               className="col-span-3"/>
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="password" className="text-right">Password</Label>
-                                        <Input id="password" onChange={e => setPassword(e.target.value)} className="col-span-3" />
+                                        <Input id="password" onChange={e => setPassword(e.target.value)}
+                                               className="col-span-3"/>
                                     </div>
                                 </div>
                                 <DialogFooter>
@@ -337,7 +340,8 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
             {/* Update Dialog */}
             {editingUser && (
                 <Dialog open={!!editingUser} onOpenChange={closeUpdateDialog}>
-                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll" aria-describedby={undefined}>
+                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll"
+                                   aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Edit user profile</DialogTitle>
                         </DialogHeader>
@@ -349,28 +353,32 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
                             />
                         ))}
                         {errorMessage && (
-                            <AlertDestructive description={errorMessage} title="Error" />
+                            <AlertDestructive description={errorMessage} title="Error"/>
                         )}
                         <div className="grid gap-4 py-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="username" className="text-right">Username</Label>
-                                <Input id="username" defaultValue={editingUser.username} className="col-span-3" disabled/>
+                                <Input id="username" defaultValue={editingUser.username} className="col-span-3"
+                                       disabled/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="lastName" className="text-right">Last name</Label>
-                                <Input id="lastName" onChange={e => setLastName(e.target.value)} defaultValue={editingUser.lastName} className="col-span-3" />
+                                <Input id="lastName" onChange={e => setLastName(e.target.value)}
+                                       defaultValue={editingUser.lastName} className="col-span-3"/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="firstName" className="text-right">First name</Label>
-                                <Input id="firstName" onChange={e => setFirstName(e.target.value)} defaultValue={editingUser.firstName} className="col-span-3" />
+                                <Input id="firstName" onChange={e => setFirstName(e.target.value)}
+                                       defaultValue={editingUser.firstName} className="col-span-3"/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="email" className="text-right">Email</Label>
-                                <Input id="email" defaultValue={editingUser.email} className="col-span-3" disabled />
+                                <Input id="email" defaultValue={editingUser.email} className="col-span-3" disabled/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="address" className="text-right">Address</Label>
-                                <Input id="address" onChange={e => setAddress(e.target.value)} defaultValue={editingUser.address} className="col-span-3" />
+                                <Input id="address" onChange={e => setAddress(e.target.value)}
+                                       defaultValue={editingUser.address} className="col-span-3"/>
                             </div>
                         </div>
                         <DialogFooter>
@@ -383,16 +391,18 @@ const AdminPanelUsersSection: React.FC<AdminPanelUsersSectionProps> = ({ users, 
             {/* Delete Dialog */}
             {deletingUser && (
                 <Dialog open={!!deletingUser} onOpenChange={closeDeleteDialog}>
-                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll" aria-describedby={undefined}>
+                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll"
+                                   aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Delete user</DialogTitle>
                             <DialogDescription>
-                                Are you sure that you want to delete the user '{deletingUser.username}'? This operation will also delete its
+                                Are you sure that you want to delete the user '{deletingUser.username}'? This operation
+                                will also delete its
                                 associated basket and orders. This operation cannot be undone!
                             </DialogDescription>
                         </DialogHeader>
                         {errorMessage && (
-                            <AlertDestructive description={errorMessage} title="Error" />
+                            <AlertDestructive description={errorMessage} title="Error"/>
                         )}
                         <DialogFooter>
                             <Button onClick={() => handleDeleteUser(deletingUser?.userId)}>Delete user</Button>

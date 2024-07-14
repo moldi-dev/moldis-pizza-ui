@@ -38,7 +38,7 @@ const AdminPanelPage = () => {
 
     const navigate = useNavigate();
 
-    const { panel } = useParams();
+    const {panel} = useParams();
 
     useEffect(() => {
         async function fetchAndTestUser() {
@@ -54,13 +54,11 @@ const AdminPanelPage = () => {
                 const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
                 const response2 = await axios.get(`http://localhost:8080/api/v1/users/admin/id=${userResponse.userId}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` }
+                    headers: {Authorization: `Bearer ${accessToken}`}
                 });
 
                 setIsAdmin(response2.data.data.answer);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
                 navigate("/pizzas");
             }
@@ -136,10 +134,18 @@ const AdminPanelPage = () => {
             <div className="grid min-h-screen w-full grid-cols-1 md:grid-cols-[280px_1fr] overflow-hidden">
                 <AdminPanelNavbar panel={panel}/>
                 <div className="flex flex-col">
-                    {panel === 'users' ? <AdminPanelUsersSection users={users} page={usersPage} numberOfPages={numberOfPagesUsers} updatePage={setUsersPage}/> : ''}
-                    {panel === 'pizzas' ? <AdminPanelPizzasSection pizzas={pizzas} page={pizzasPage} numberOfPages={numberOfPagesPizzas} updatePage={setPizzasPage}/> : ''}
-                    {panel === 'orders' ? <AdminPanelOrdersSection orders={orders} page={ordersPage} numberOfPages={numberOfPagesOrders} updatePage={setOrdersPage}/> : ''}
-                    {panel === 'reviews' ? <AdminPanelReviewsSection reviews={reviews} page={reviewsPage} numberOfPages={numberOfPagesReviews} updatePage={setReviewsPage}/> : ''}
+                    {panel === 'users' ?
+                        <AdminPanelUsersSection users={users} page={usersPage} numberOfPages={numberOfPagesUsers}
+                                                updatePage={setUsersPage}/> : ''}
+                    {panel === 'pizzas' ?
+                        <AdminPanelPizzasSection pizzas={pizzas} page={pizzasPage} numberOfPages={numberOfPagesPizzas}
+                                                 updatePage={setPizzasPage}/> : ''}
+                    {panel === 'orders' ?
+                        <AdminPanelOrdersSection orders={orders} page={ordersPage} numberOfPages={numberOfPagesOrders}
+                                                 updatePage={setOrdersPage}/> : ''}
+                    {panel === 'reviews' ? <AdminPanelReviewsSection reviews={reviews} page={reviewsPage}
+                                                                     numberOfPages={numberOfPagesReviews}
+                                                                     updatePage={setReviewsPage}/> : ''}
                 </div>
             </div>
         </>

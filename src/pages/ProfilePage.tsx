@@ -47,9 +47,12 @@ const ProfilePage = () => {
 
     return (
         <>
-            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket}/>
-            <UpdateProfileForms updateLoggedInUserProfilePicture={updateLoggedInUserProfilePicture} updateLoggedInUserData={updateLoggedInUserData} loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}/>
-            <Footer />
+            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}
+                    loggedInUserBasket={loggedInUserBasket}/>
+            <UpdateProfileForms updateLoggedInUserProfilePicture={updateLoggedInUserProfilePicture}
+                                updateLoggedInUserData={updateLoggedInUserData} loggedInUser={loggedInUser}
+                                loggedInUserProfilePicture={loggedInUserProfilePicture}/>
+            <Footer/>
         </>
     );
 };

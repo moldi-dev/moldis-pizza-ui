@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
 import {Button} from "./ui/button.tsx";
@@ -8,6 +8,8 @@ import {Label} from "./ui/label.tsx";
 import {AlertDestructive} from "./ui/alert-destructive.tsx";
 import {Checkbox} from "./ui/checkbox.tsx";
 import {Eye, EyeOff} from "lucide-react";
+import {Separator} from "./ui/separator.tsx";
+import {FaGoogle} from "react-icons/fa";
 
 const SignInForm = () => {
     const [username, setUsername] = useState('');
@@ -20,6 +22,10 @@ const SignInForm = () => {
 
     const [showPassword, setShowPassword] = useState(false);
 
+    const handleContinueWithGoogle = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    }
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     }
@@ -27,9 +33,7 @@ const SignInForm = () => {
     const handleCheckboxChange: React.FormEventHandler<HTMLButtonElement> = (e) => {
         if (rememberMe === 'false') {
             setRememberMe('true');
-        }
-
-        else if (rememberMe === 'true') {
+        } else if (rememberMe === 'true') {
             setRememberMe('false');
         }
     };
@@ -56,16 +60,12 @@ const SignInForm = () => {
             }
 
             navigate("/pizzas");
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.data.status === 'BAD_REQUEST') {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -76,6 +76,20 @@ const SignInForm = () => {
         }
     };
 
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const error = queryParams.get('error');
+
+        if (error) {
+            setErrorMessage(error);
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            setTimeout(() => {
+                setErrorMessage('');
+            }, 4000);
+        }
+    }, [location.search]);
+
     return (
         <>
             <Card className="mx-auto max-w-sm">
@@ -85,7 +99,7 @@ const SignInForm = () => {
                         Enter your username and password below to sign in to your account
                     </CardDescription>
                     {errorMessage && (
-                        <AlertDestructive description={errorMessage} title="Error" />
+                        <AlertDestructive description={errorMessage} title="Error"/>
                     )}
                     {validationErrors.length > 0 && validationErrors.map((error, index) => (
                         <AlertDestructive
@@ -120,9 +134,10 @@ const SignInForm = () => {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Your password"
                                     onChange={e => setPassword(e.target.value)}
-                                    required />
-                                <span onClick={togglePasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
-                                        {showPassword ? <Eye /> : <EyeOff />}
+                                    required/>
+                                <span onClick={togglePasswordVisibility}
+                                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                        {showPassword ? <Eye/> : <EyeOff/>}
                                 </span>
                             </div>
                         </div>
@@ -131,7 +146,7 @@ const SignInForm = () => {
                                 <Checkbox
                                     id="rememberMe"
                                     name="rememberMe"
-                                    onClick={handleCheckboxChange} />
+                                    onClick={handleCheckboxChange}/>
                                 <Label htmlFor="rememberMe">Remember me</Label>
                             </div>
                         </div>
@@ -144,6 +159,17 @@ const SignInForm = () => {
                         <Link to="/sign-up" className="underline">
                             Sign up
                         </Link>
+                    </div>
+                    <div className="mt-4 text-center flex items-center justify-center">
+                        <Separator className="flex-1"/>
+                        <span className="mx-2">OR</span>
+                        <Separator className="flex-1"/>
+                    </div>
+                    <div className="mt-4 text-center">
+                        <Button variant="outline" className="mt-4 w-full flex items-center justify-center gap-2"
+                                onClick={handleContinueWithGoogle}>
+                            <FaGoogle className="h-5 w-5"/>Continue with Google
+                        </Button>
                     </div>
                 </CardContent>
             </Card>

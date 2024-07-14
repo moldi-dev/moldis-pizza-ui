@@ -30,7 +30,7 @@ interface NavbarProps {
     loggedInUserBasket: BasketModel | undefined;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePicture, loggedInUserBasket}) => {
+const Navbar: React.FC<NavbarProps> = ({loggedInUser, loggedInUserProfilePicture, loggedInUserBasket}) => {
     const navigate = useNavigate();
 
     const [basket, setBasket] = useState<BasketModel | undefined>(loggedInUserBasket);
@@ -55,13 +55,11 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
                 const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
                 const response2 = await axios.get(`http://localhost:8080/api/v1/users/admin/id=${userResponse.userId}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` }
+                    headers: {Authorization: `Bearer ${accessToken}`}
                 });
 
                 setIsAdmin(response2.data.data.answer);
-            }
-
-            catch (error) {
+            } catch (error) {
                 setIsAdmin(false);
             }
         }
@@ -80,9 +78,7 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
             try {
                 const response = await BasketAPI.removePizzaFromUserBasket(loggedInUser.userId, pizzaId, accessToken);
                 setBasket(response.data.basketDTO);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
                 setError(true);
             }
@@ -104,20 +100,21 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
         <>
             {error &&
                 <>
-                <Dialog defaultOpen={true}>
-                    <DialogTitle />
-                    <DialogTrigger asChild>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
-                        <div className="flex flex-col items-center justify-center gap-4 py-8">
-                            <CircleAlertIcon className="size-12 text-red-500" />
-                            <div className="grid gap-2 text-center">
-                                <h3 className="text-2xl font-bold">Error</h3>
-                                <p className="text-muted-foreground">An unexpected error has occurred, please try again later.</p>
+                    <Dialog defaultOpen={true}>
+                        <DialogTitle/>
+                        <DialogTrigger asChild>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
+                            <div className="flex flex-col items-center justify-center gap-4 py-8">
+                                <CircleAlertIcon className="size-12 text-red-500"/>
+                                <div className="grid gap-2 text-center">
+                                    <h3 className="text-2xl font-bold">Error</h3>
+                                    <p className="text-muted-foreground">An unexpected error has occurred, please try
+                                        again later.</p>
+                                </div>
                             </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                        </DialogContent>
+                    </Dialog>
                 </>
             }
 
@@ -126,7 +123,7 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
                 {/* Logo */}
                 <div className="flex justify-between">
                     <Link to="/pizzas">
-                        <PizzaIcon className="h-12 w-12 text-white" />
+                        <PizzaIcon className="h-12 w-12 text-white"/>
                         <span className="text-white">Moldi's Pizza</span>
                     </Link>
                 </div>
@@ -186,64 +183,67 @@ const Navbar: React.FC<NavbarProps> = ({ loggedInUser, loggedInUserProfilePictur
                     {/* User shopping cart with sheet */}
                     {loggedInUser != undefined && !isOnCheckoutPage &&
                         <div className="flex items-center space-x-4 text-white px-3">
-                                <Sheet>
-                                    <SheetTrigger asChild>
-                                        <Button className="border-2 border-white">
-                                            <ShoppingCart className="h-8 w-8"/>
-                                            <span className="px-3">Your basket</span>
-                                        </Button>
-                                    </SheetTrigger>
-                                    <SheetContent className="overflow-y-scroll" aria-describedby={undefined}>
-                                        <SheetHeader>
-                                            <SheetTitle className="pb-5">Your basket</SheetTitle>
-                                        </SheetHeader>
-                                        {basket && basket.pizzas.length > 0 ?
-                                            <>
-                                                    <div className="row flex flex-col">
-                                                        {basket.pizzas.map((pizza: PizzaModel, index) => (
-                                                            <React.Fragment key={index}>
-                                                                <div className="col-12">
-                                                                    <PizzaInBasketCard pizza={pizza}/>
-                                                                </div>
-                                                                <div className="col-12 text-right">
-                                                                    <Button className="pt-2 text-right" onClick={() => handleRemovePizzaFromBasket(pizza.pizzaId)}>
-                                                                        <Trash2 />
-                                                                    </Button>
-                                                                </div>
-                                                                <div className="col-12 mt-4 mb-4">
-                                                                    <Separator className="mt-4 mb-4"/>
-                                                                </div>
-                                                            </React.Fragment>
-                                                        ))}
-                                                        <p>Total price to pay: ${basket.totalPrice.toFixed(2)}</p>
-                                                    </div>
+                            <Sheet>
+                                <SheetTrigger asChild>
+                                    <Button className="border-2 border-white">
+                                        <ShoppingCart className="h-8 w-8"/>
+                                        <span className="px-3">Your basket</span>
+                                    </Button>
+                                </SheetTrigger>
+                                <SheetContent className="overflow-y-scroll" aria-describedby={undefined}>
+                                    <SheetHeader>
+                                        <SheetTitle className="pb-5">Your basket</SheetTitle>
+                                    </SheetHeader>
+                                    {basket && basket.pizzas.length > 0 ?
+                                        <>
+                                            <div className="row flex flex-col">
+                                                {basket.pizzas.map((pizza: PizzaModel, index) => (
+                                                    <React.Fragment key={index}>
+                                                        <div className="col-12">
+                                                            <PizzaInBasketCard pizza={pizza}/>
+                                                        </div>
+                                                        <div className="col-12 text-right">
+                                                            <Button className="pt-2 text-right"
+                                                                    onClick={() => handleRemovePizzaFromBasket(pizza.pizzaId)}>
+                                                                <Trash2/>
+                                                            </Button>
+                                                        </div>
+                                                        <div className="col-12 mt-4 mb-4">
+                                                            <Separator className="mt-4 mb-4"/>
+                                                        </div>
+                                                    </React.Fragment>
+                                                ))}
+                                                <p>Total price to pay: ${basket.totalPrice.toFixed(2)}</p>
+                                            </div>
 
-                                                <SheetFooter className="flex flex-col mt-2">
-                                                    <SheetClose asChild>
-                                                        <Link to="/checkout">
-                                                            <Button>Go to checkout</Button>
-                                                        </Link>
-                                                    </SheetClose>
-                                                </SheetFooter>
-                                            </>
+                                            <SheetFooter className="flex flex-col mt-2">
+                                                <SheetClose asChild>
+                                                    <Link to="/checkout">
+                                                        <Button>Go to checkout</Button>
+                                                    </Link>
+                                                </SheetClose>
+                                            </SheetFooter>
+                                        </>
 
-                                            :
+                                        :
 
-                                            <>
-                                                <h1 className="flex mt-2">Your basket is empty. Consider adding some pizzas in it :)</h1>
-                                            </>
-                                        }
-                                    </SheetContent>
-                                </Sheet>
+                                        <>
+                                            <h1 className="flex mt-2">Your basket is empty. Consider adding some pizzas
+                                                in it :)</h1>
+                                        </>
+                                    }
+                                </SheetContent>
+                            </Sheet>
                         </div>
                     }
 
                     {/* User redirect to sign-in page for a user which is not logged in */}
                     {loggedInUser == undefined &&
                         <Link to="/sign-in" className="flex items-center text-white">
-                            <Button variant="ghost" className="relative h-15 mx-6 border-2 border-white hover:bg-primary hover:text-white">
-                                    <User/>
-                                    <span className="px-2">My account</span>
+                            <Button variant="ghost"
+                                    className="relative h-15 mx-6 border-2 border-white hover:bg-primary hover:text-white">
+                                <User/>
+                                <span className="px-2">My account</span>
                             </Button>
                         </Link>
                     }

@@ -6,7 +6,7 @@ interface PizzaCheckoutDetailProps {
     pizza: PizzaModel
 }
 
-const PizzaCheckoutDetail: React.FC<PizzaCheckoutDetailProps> = ({ pizza }) => {
+const PizzaCheckoutDetail: React.FC<PizzaCheckoutDetailProps> = ({pizza}) => {
     const [pizzaImage, setPizzaImage] = useState('');
 
     useEffect(() => {
@@ -19,9 +19,7 @@ const PizzaCheckoutDetail: React.FC<PizzaCheckoutDetailProps> = ({ pizza }) => {
                 const firstImage = await ImageAPI.findById(imageId);
 
                 setPizzaImage(firstImage.data.base64EncodedImage);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
             }
         }

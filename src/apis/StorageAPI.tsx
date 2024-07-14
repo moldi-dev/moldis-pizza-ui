@@ -1,19 +1,13 @@
 async function getAccessTokenFromLocalStorage() {
     if (localStorage.getItem('rememberMeToken')) {
         return localStorage.getItem('rememberMeToken');
-    }
-
-    else if (localStorage.getItem('refreshToken')) {
+    } else if (localStorage.getItem('refreshToken')) {
         return localStorage.getItem('refreshToken');
-    }
-
-    else if (localStorage.getItem('accessToken')) {
+    } else if (localStorage.getItem('accessToken')) {
         return localStorage.getItem('accessToken');
-    }
-
-    else {
+    } else {
         return null;
     }
 }
 
-export default { getAccessTokenFromLocalStorage }
+export default {getAccessTokenFromLocalStorage}

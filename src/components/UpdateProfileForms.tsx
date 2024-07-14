@@ -19,7 +19,12 @@ interface UpdateProfileFormProps {
     updateLoggedInUserProfilePicture: (updateLoggedInUserProfilePicture: string) => void;
 }
 
-const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, loggedInUserProfilePicture, updateLoggedInUserData, updateLoggedInUserProfilePicture }) => {
+const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({
+                                                                  loggedInUser,
+                                                                  loggedInUserProfilePicture,
+                                                                  updateLoggedInUserData,
+                                                                  updateLoggedInUserProfilePicture
+                                                              }) => {
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -74,37 +79,33 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
         setShowConfirmNewPassword(!showConfirmNewPassword);
     }
 
-    const handleChangePassword = async (e: {preventDefault: () => void; }) => {
+    const handleChangePassword = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
         try {
             const response = await axios.post(
                 `http://localhost:8080/api/v1/users/change-password/id=${loggedInUser?.userId}`, {
-                currentPassword,
-                newPassword,
-                confirmNewPassword
-            }, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            });
+                    currentPassword,
+                    newPassword,
+                    confirmNewPassword
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
 
             setSuccessMessage2(response.data.message);
 
             setTimeout(() => {
                 setSuccessMessage2('');
             }, 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors2(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage2(error.response.data.message);
             }
 
@@ -130,16 +131,12 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
             updateLoggedInUserProfilePicture('');
 
             setTimeout(() => setSuccessMessage(''), 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage('An unexpected error has occurred. Please try again later!');
             }
 
@@ -163,11 +160,11 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
 
                 const response = await axios.post("http://localhost:8080/api/v1/images",
                     formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${accessToken}`
-                    }
-                })
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    })
 
                 const response2 = await axios.patch(`http://localhost:8080/api/v1/users/set-image/id=${user?.userId}/image-id=${response.data.data.imageDTO.imageId}`, null, {
                     headers: {
@@ -183,16 +180,12 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                 setSuccessMessage('Successfully updated your profile picture');
 
                 setTimeout(() => setSuccessMessage(''), 4000);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
 
                 if (error.response && error.response.status == 400) {
                     setValidationErrors(error.response.data.data.validationErrors);
-                }
-
-                else if (error.response) {
+                } else if (error.response) {
                     setErrorMessage('An unexpected error has occurred. Please try again later!');
                 }
 
@@ -218,7 +211,7 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                 address,
                 password
             }, {
-                headers: { Authorization: `Bearer ${accessToken}`}
+                headers: {Authorization: `Bearer ${accessToken}`}
             })
 
             setSuccessMessage('Successfully updated your profile');
@@ -227,9 +220,7 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
             setUser(response.data.data.userDTO);
 
             setTimeout(() => setSuccessMessage(''), 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
@@ -260,19 +251,19 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                             ))}
                             {successMessage && (
                                 <Alert variant="default">
-                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertCircle className="h-4 w-4"/>
                                     <AlertTitle>Success</AlertTitle>
                                     <AlertDescription>{successMessage}</AlertDescription>
                                 </Alert>
                             )}
                             {errorMessage && (
-                                <AlertDestructive description={errorMessage} title="Error" />
+                                <AlertDestructive description={errorMessage} title="Error"/>
                             )}
                         </CardHeader>
                         <CardContent className="grid grid-cols-1 gap-6">
                             <div className="flex flex-col items-center gap-4">
                                 <Avatar className="h-24 w-24">
-                                    <AvatarImage src={`data:image/jpeg;base64,${loggedInUserProfilePicture}`} />
+                                    <AvatarImage src={`data:image/jpeg;base64,${loggedInUserProfilePicture}`}/>
                                     <AvatarFallback>{user.lastName.charAt(0).concat(user.firstName.charAt(0)).toUpperCase()}</AvatarFallback>
                                 </Avatar>
                                 <Label htmlFor="picture">Change your profile picture</Label>
@@ -338,8 +329,9 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                                             placeholder="Enter your password to confirm changes"
                                             onChange={e => setPassword(e.target.value)}
                                         />
-                                        <span onClick={togglePasswordVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
-                                            {showPassword ? <Eye /> : <EyeOff />}
+                                        <span onClick={togglePasswordVisibility}
+                                              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-muted-foreground h-10 w-8">
+                                            {showPassword ? <Eye/> : <EyeOff/>}
                                         </span>
                                     </div>
                                 </div>
@@ -352,16 +344,17 @@ const UpdateProfileForms: React.FC<UpdateProfileFormProps> = ({ loggedInUser, lo
                     <Card className="mb-10">
                         <CardHeader>
                             <CardTitle className="text-3xl font-bold text-center">Change your password</CardTitle>
-                            <CardDescription className="text-center">Enter your current password and your new password below to update your account's password</CardDescription>
+                            <CardDescription className="text-center">Enter your current password and your new password
+                                below to update your account's password</CardDescription>
                             {successMessage2 && (
                                 <Alert variant="default">
-                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertCircle className="h-4 w-4"/>
                                     <AlertTitle>Success</AlertTitle>
                                     <AlertDescription>{successMessage2}</AlertDescription>
                                 </Alert>
                             )}
                             {errorMessage2 && (
-                                <AlertDestructive description={errorMessage2} title="Error" />
+                                <AlertDestructive description={errorMessage2} title="Error"/>
                             )}
                             {validationErrors2.length > 0 && validationErrors2.map((error, index) => (
                                 <AlertDestructive

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "./ui/card.tsx";
 import {Label} from "./ui/label.tsx";
 import {Input} from "./ui/input.tsx";
@@ -46,20 +46,14 @@ const SignUpForm = () => {
             setTimeout(() => {
                 setSuccessMessage('');
             }, 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setErrorMessage(error.response.data.message);
-            }
-
-            else if (error.response && error.response.status == 409) {
+            } else if (error.response && error.response.status == 409) {
                 setErrorMessage(error.response.data.message);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage('An unexpected error has occurred. Please try again later!');
             }
 
@@ -90,16 +84,12 @@ const SignUpForm = () => {
             setTimeout(() => {
                 setSuccessMessage('');
             }, 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -124,16 +114,12 @@ const SignUpForm = () => {
             setTimeout(() => {
                 setSuccessMessage('');
             }, 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -161,13 +147,13 @@ const SignUpForm = () => {
                     ))}
                     {successMessage && (
                         <Alert variant="default">
-                            <AlertCircle className="h-4 w-4" />
+                            <AlertCircle className="h-4 w-4"/>
                             <AlertTitle>Success</AlertTitle>
                             <AlertDescription>{successMessage}</AlertDescription>
                         </Alert>
                     )}
                     {errorMessage && (
-                        <AlertDestructive description={errorMessage} title="Error" />
+                        <AlertDestructive description={errorMessage} title="Error"/>
                     )}
                 </CardHeader>
                 <CardContent>
@@ -270,7 +256,8 @@ const SignUpForm = () => {
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="verificationCode">Verification Code</Label>
-                                    <Textarea id="verificationCode" placeholder="Your verification code" onChange={e => setVerificationCode(e.target.value)}/>
+                                    <Textarea id="verificationCode" placeholder="Your verification code"
+                                              onChange={e => setVerificationCode(e.target.value)}/>
                                 </div>
                                 <div className="grid gap-2">
                                     <Button onClick={handleActivateAccount} className="w-full">
@@ -280,7 +267,8 @@ const SignUpForm = () => {
                             </div>
                             <div className="mt-4 text-center text-sm">
                                 Didn't receive the verification code at the previous step?{" "}
-                                <p onClick={e => handleResendConfirmationEmail(email)} className="underline hover:cursor-pointer">
+                                <p onClick={e => handleResendConfirmationEmail(email)}
+                                   className="underline hover:cursor-pointer">
                                     Resend the verification code to your email
                                 </p>
                             </div>
@@ -291,11 +279,11 @@ const SignUpForm = () => {
                         <>
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                   <Link to="/sign-in">
-                                       <Button type="submit" className="w-full">
-                                           Back to sign in
-                                       </Button>
-                                   </Link>
+                                    <Link to="/sign-in">
+                                        <Button type="submit" className="w-full">
+                                            Back to sign in
+                                        </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </>

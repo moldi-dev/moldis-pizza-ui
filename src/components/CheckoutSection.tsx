@@ -14,7 +14,7 @@ interface CheckoutSectionProps {
     loggedInUser: UserModel | undefined;
 }
 
-const CheckoutSection: React.FC<CheckoutSectionProps> = ({ loggedInUser, loggedInUserBasket }) => {
+const CheckoutSection: React.FC<CheckoutSectionProps> = ({loggedInUser, loggedInUserBasket}) => {
     const navigate = useNavigate();
 
     const [basket, setBasket] = useState<BasketModel | undefined>(loggedInUserBasket);
@@ -35,9 +35,7 @@ const CheckoutSection: React.FC<CheckoutSectionProps> = ({ loggedInUser, loggedI
                 if (response.developerMessage) {
                     window.location.href = response.developerMessage;
                 }
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
             }
         }
@@ -65,7 +63,7 @@ const CheckoutSection: React.FC<CheckoutSectionProps> = ({ loggedInUser, loggedI
                                         <p>${pizza.price.toFixed(2)}</p>
                                     </div>
                                 ))}
-                                <Separator />
+                                <Separator/>
                                 <div className="flex justify-between font-bold">
                                     <p>Total</p>
                                     <p>${loggedInUserBasket.totalPrice.toFixed(2)}</p>

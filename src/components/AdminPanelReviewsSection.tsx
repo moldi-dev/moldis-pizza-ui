@@ -27,7 +27,12 @@ interface AdminPanelReviewsSectionProps {
     updatePage: (page: number) => void;
 }
 
-const AdminPanelReviewsSection: React.FC<AdminPanelReviewsSectionProps> = ({ reviews, page, numberOfPages, updatePage }) => {
+const AdminPanelReviewsSection: React.FC<AdminPanelReviewsSectionProps> = ({
+                                                                               reviews,
+                                                                               page,
+                                                                               numberOfPages,
+                                                                               updatePage
+                                                                           }) => {
     const [rating, setRating] = useState(1);
     const [comment, setComment] = useState('');
 
@@ -65,27 +70,23 @@ const AdminPanelReviewsSection: React.FC<AdminPanelReviewsSectionProps> = ({ rev
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
         try {
-            const updatedReview = { ...editingReview, rating, comment };
+            const updatedReview = {...editingReview, rating, comment};
 
             const response = await axios.patch(`http://localhost:8080/api/v1/reviews/admin/id=${reviewId}`, {
                 rating,
                 comment
             }, {
-                headers: { Authorization: `Bearer ${accessToken}`}
+                headers: {Authorization: `Bearer ${accessToken}`}
             });
 
             window.location.reload();
             closeUpdateDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -110,9 +111,7 @@ const AdminPanelReviewsSection: React.FC<AdminPanelReviewsSectionProps> = ({ rev
 
             window.location.reload();
             closeDeleteDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
@@ -203,7 +202,8 @@ const AdminPanelReviewsSection: React.FC<AdminPanelReviewsSectionProps> = ({ rev
             {/* Update Dialog */}
             {editingReview && (
                 <Dialog open={!!editingReview} onOpenChange={closeUpdateDialog}>
-                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll" aria-describedby={undefined}>
+                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll"
+                                   aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Edit review details</DialogTitle>
                         </DialogHeader>
@@ -241,7 +241,8 @@ const AdminPanelReviewsSection: React.FC<AdminPanelReviewsSectionProps> = ({ rev
             {/* Delete Dialog */}
             {deletingReview && (
                 <Dialog open={!!deletingReview} onOpenChange={closeDeleteDialog}>
-                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll" aria-describedby={undefined}>
+                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll"
+                                   aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Delete review</DialogTitle>
                             <DialogDescription>Are you sure that you want to delete the review

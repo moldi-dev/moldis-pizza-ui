@@ -20,7 +20,14 @@ interface PizzaComponentProps {
     pizzaImages: string[]
 }
 
-const PizzaDetails: React.FC<PizzaComponentProps> = ({ loggedInUser, pizzaImages, pizza, reviews, updateBasket, loggedInUserBasket }) => {
+const PizzaDetails: React.FC<PizzaComponentProps> = ({
+                                                         loggedInUser,
+                                                         pizzaImages,
+                                                         pizza,
+                                                         reviews,
+                                                         updateBasket,
+                                                         loggedInUserBasket
+                                                     }) => {
     const navigate = useNavigate();
 
     const [isPizzaAddedToBasket, setIsPizzaAddedToBasket] = useState(false);
@@ -29,9 +36,7 @@ const PizzaDetails: React.FC<PizzaComponentProps> = ({ loggedInUser, pizzaImages
     const handleAddToBasket = async (pizzaId: number | undefined) => {
         if (loggedInUser == undefined) {
             navigate("/sign-in");
-        }
-
-        else {
+        } else {
             const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
             if (accessToken != null) {
@@ -39,9 +44,7 @@ const PizzaDetails: React.FC<PizzaComponentProps> = ({ loggedInUser, pizzaImages
                     const response = await BasketAPI.addPizzaToUserBasket(loggedInUser.userId, pizzaId, accessToken);
                     updateBasket(response.data.basketDTO);
                     setIsPizzaAddedToBasket(true);
-                }
-
-                catch (error) {
+                } catch (error) {
                     console.log(error);
                     setError(true);
                     setIsPizzaAddedToBasket(false);
@@ -54,13 +57,14 @@ const PizzaDetails: React.FC<PizzaComponentProps> = ({ loggedInUser, pizzaImages
         <>
             {error &&
                 <Dialog open={error} onOpenChange={() => setError(false)}>
-                    <DialogTitle />
+                    <DialogTitle/>
                     <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
                         <div className="flex flex-col items-center justify-center gap-4 py-8">
-                            <CircleAlertIcon className="size-12 text-red-500" />
+                            <CircleAlertIcon className="size-12 text-red-500"/>
                             <div className="grid gap-2 text-center">
                                 <h3 className="text-2xl font-bold">Error</h3>
-                                <p className="text-muted-foreground">An unexpected error has occurred, please try again later.</p>
+                                <p className="text-muted-foreground">An unexpected error has occurred, please try again
+                                    later.</p>
                             </div>
                         </div>
                     </DialogContent>
@@ -69,13 +73,14 @@ const PizzaDetails: React.FC<PizzaComponentProps> = ({ loggedInUser, pizzaImages
 
             {isPizzaAddedToBasket &&
                 <Dialog open={isPizzaAddedToBasket} onOpenChange={() => setIsPizzaAddedToBasket(false)}>
-                    <DialogTitle />
+                    <DialogTitle/>
                     <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
                         <div className="flex flex-col items-center justify-center gap-4 py-8">
-                            <CircleCheckIcon className="size-12 text-green-500" />
+                            <CircleCheckIcon className="size-12 text-green-500"/>
                             <div className="grid gap-2 text-center">
                                 <h3 className="text-2xl font-bold">Pizza added</h3>
-                                <p className="text-muted-foreground">Your delicious pizza has been added to your basket!</p>
+                                <p className="text-muted-foreground">Your delicious pizza has been added to your
+                                    basket!</p>
                             </div>
                         </div>
                     </DialogContent>
@@ -99,8 +104,8 @@ const PizzaDetails: React.FC<PizzaComponentProps> = ({ loggedInUser, pizzaImages
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
+                            <CarouselPrevious/>
+                            <CarouselNext/>
                         </Carousel>
                     </div>
                     <div className="space-y-6">

@@ -8,7 +8,7 @@ import BasketAPI from "../apis/BasketAPI.tsx";
 import Navbar from "../components/Navbar.tsx";
 import Footer from "../components/Footer.tsx";
 import PizzaDetails from "../components/PizzaDetails.tsx";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import ReviewModel from "../models/ReviewModel.tsx";
 import ReviewAPI from "../apis/ReviewAPI.tsx";
@@ -29,7 +29,7 @@ const PizzaPage = () => {
     const [page, setPage] = useState(0);
     const [numberOfPages, setNumberOfPages] = useState(0);
 
-    const { id } = useParams();
+    const {id} = useParams();
 
     const navigate = useNavigate();
 
@@ -88,9 +88,7 @@ const PizzaPage = () => {
                 });
 
                 setHasLoggedInUserReviewedThePizza(hasReviewedResponse.data.data.answer);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.error(error);
             }
         }
@@ -108,7 +106,7 @@ const PizzaPage = () => {
                 setPizza(pizzaResponse.data.data.pizzaDTO);
 
                 const images = pizzaResponse.data.data.pizzaDTO.images;
-                const fetchedImages= new Array(images.length).fill('');
+                const fetchedImages = new Array(images.length).fill('');
 
                 for (let index = 0; index < images.length; index++) {
                     const imageId = images[index].imageId;
@@ -119,9 +117,7 @@ const PizzaPage = () => {
                 }
 
                 setPizzaImages(fetchedImages);
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
 
                 if (error.response && (error.response.status == 404 || error.response.status == 500)) {
@@ -142,9 +138,7 @@ const PizzaPage = () => {
 
                     setNumberOfPages(reviewsResponse.data.reviewsDTOs.totalPages);
                 }
-            }
-
-            catch (error) {
+            } catch (error) {
                 console.log(error);
             }
         }
@@ -154,11 +148,17 @@ const PizzaPage = () => {
 
     return (
         <>
-            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket} />
-            <PizzaDetails loggedInUser={loggedInUser} pizzaImages={pizzaImages} pizza={pizza} reviews={reviews} loggedInUserBasket={loggedInUserBasket} updateBasket={updateBasket}/>
+            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}
+                    loggedInUserBasket={loggedInUserBasket}/>
+            <PizzaDetails loggedInUser={loggedInUser} pizzaImages={pizzaImages} pizza={pizza} reviews={reviews}
+                          loggedInUserBasket={loggedInUserBasket} updateBasket={updateBasket}/>
             <Separator className="mt-12"/>
-            <ReviewsSection page={page} updatePage={updatePage} numberOfPages={numberOfPages} updateHasLoggedInUserReviewedThePizza={e => setHasLoggedInUserReviewedThePizza(e)} hasLoggedInUserBoughtThePizza={hasLoggedInUserBoughtThePizza} hasLoggedInUserReviewedThePizza={hasLoggedInUserReviewedThePizza} pizzaId={pizzaId} addReview={addReview} loggedInUser={loggedInUser} reviews={reviews} />
-            <Footer />
+            <ReviewsSection page={page} updatePage={updatePage} numberOfPages={numberOfPages}
+                            updateHasLoggedInUserReviewedThePizza={e => setHasLoggedInUserReviewedThePizza(e)}
+                            hasLoggedInUserBoughtThePizza={hasLoggedInUserBoughtThePizza}
+                            hasLoggedInUserReviewedThePizza={hasLoggedInUserReviewedThePizza} pizzaId={pizzaId}
+                            addReview={addReview} loggedInUser={loggedInUser} reviews={reviews}/>
+            <Footer/>
         </>
     );
 };

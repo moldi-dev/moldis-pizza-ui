@@ -9,7 +9,6 @@ import {AlertCircle, Eye, EyeOff} from "lucide-react";
 import axios from "axios";
 import {Textarea} from "./ui/textarea.tsx";
 import {Link} from "react-router-dom";
-import {Simulate} from "react-dom/test-utils";
 
 const ForgotPasswordForm = () => {
     const [errorMessage, setErrorMessage] = useState('');
@@ -42,16 +41,12 @@ const ForgotPasswordForm = () => {
             setTimeout(() => {
                 setSuccessMessage('');
             }, 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -79,16 +74,12 @@ const ForgotPasswordForm = () => {
             setTimeout(() => {
                 setSuccessMessage('');
             }, 4000);
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -117,13 +108,13 @@ const ForgotPasswordForm = () => {
                     </CardDescription>
                     {successMessage && (
                         <Alert variant="default">
-                            <AlertCircle className="h-4 w-4" />
+                            <AlertCircle className="h-4 w-4"/>
                             <AlertTitle>Success</AlertTitle>
                             <AlertDescription>{successMessage}</AlertDescription>
                         </Alert>
                     )}
                     {errorMessage && (
-                        <AlertDestructive description={errorMessage} title="Error" />
+                        <AlertDestructive description={errorMessage} title="Error"/>
                     )}
                     {validationErrors.length > 0 && validationErrors.map((error, index) => (
                         <AlertDestructive
@@ -206,7 +197,7 @@ const ForgotPasswordForm = () => {
                             </div>
                         ) : (
                             <Link to="/sign-in">
-                            <Button className="w-full outline">
+                                <Button className="w-full outline">
                                     Go to sign in
                                 </Button>
                             </Link>

@@ -25,7 +25,7 @@ const SignUpPage = () => {
     return (
         <>
             <div className="py-10">
-                <SignUpForm />
+                <SignUpForm/>
             </div>
         </>
     );

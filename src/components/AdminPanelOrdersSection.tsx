@@ -28,7 +28,7 @@ interface AdminPanelOrdersSectionProps {
     updatePage: (page: number) => void;
 }
 
-const AdminPanelOrdersSection: React.FC<AdminPanelOrdersSectionProps> = ({ orders, page, numberOfPages, updatePage }) => {
+const AdminPanelOrdersSection: React.FC<AdminPanelOrdersSectionProps> = ({orders, page, numberOfPages, updatePage}) => {
     const [editingOrder, setEditingOrder] = useState<OrderModel | null>(null);
     const [deletingOrder, setDeletingOrder] = useState<OrderModel | null>(null);
 
@@ -68,27 +68,23 @@ const AdminPanelOrdersSection: React.FC<AdminPanelOrdersSectionProps> = ({ order
         const accessToken = await StorageAPI.getAccessTokenFromLocalStorage();
 
         try {
-            const updatedOrder = { ...editingOrder, totalPrice, status };
+            const updatedOrder = {...editingOrder, totalPrice, status};
 
             const response = await axios.patch(`http://localhost:8080/api/v1/orders/admin/id=${orderId}`, {
                 totalPrice,
                 status
             }, {
-                headers: { Authorization: `Bearer ${accessToken}`}
+                headers: {Authorization: `Bearer ${accessToken}`}
             });
 
             window.location.reload();
             closeUpdateDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             console.log(error);
 
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -113,9 +109,7 @@ const AdminPanelOrdersSection: React.FC<AdminPanelOrdersSectionProps> = ({ order
 
             window.location.reload();
             closeDeleteDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
@@ -212,7 +206,8 @@ const AdminPanelOrdersSection: React.FC<AdminPanelOrdersSectionProps> = ({ order
             {/* Update Dialog */}
             {editingOrder && (
                 <Dialog open={!!editingOrder} onOpenChange={closeUpdateDialog}>
-                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll" aria-describedby={undefined}>
+                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll"
+                                   aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Edit order details</DialogTitle>
                         </DialogHeader>
@@ -224,18 +219,19 @@ const AdminPanelOrdersSection: React.FC<AdminPanelOrdersSectionProps> = ({ order
                             />
                         ))}
                         {errorMessage && (
-                            <AlertDestructive description={errorMessage} title="Error" />
+                            <AlertDestructive description={errorMessage} title="Error"/>
                         )}
                         <div className="grid gap-4 py-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="totalPrice" className="text-right">Total price</Label>
-                                <Input id="totalPrice" type="number" defaultValue={editingOrder.totalPrice} className="col-span-3" onChange={e => setTotalPrice(Number(e.target.value))}/>
+                                <Input id="totalPrice" type="number" defaultValue={editingOrder.totalPrice}
+                                       className="col-span-3" onChange={e => setTotalPrice(Number(e.target.value))}/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="status" className="text-right">Status</Label>
                                 <Select defaultValue={editingOrder.status} onValueChange={(value) => setStatus(value)}>
                                     <SelectTrigger className="w-[180px]">
-                                        <SelectValue />
+                                        <SelectValue/>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -259,13 +255,15 @@ const AdminPanelOrdersSection: React.FC<AdminPanelOrdersSectionProps> = ({ order
             {/* Delete Dialog */}
             {deletingOrder && (
                 <Dialog open={!!deletingOrder} onOpenChange={closeDeleteDialog}>
-                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll" aria-describedby={undefined}>
+                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-scroll"
+                                   aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Delete order</DialogTitle>
-                            <DialogDescription>Are you sure that you want to delete the order '{deletingOrder.orderId}'?</DialogDescription>
+                            <DialogDescription>Are you sure that you want to delete the order
+                                '{deletingOrder.orderId}'?</DialogDescription>
                         </DialogHeader>
                         {errorMessage && (
-                            <AlertDestructive description={errorMessage} title="Error" />
+                            <AlertDestructive description={errorMessage} title="Error"/>
                         )}
                         <DialogFooter>
                             <Button onClick={() => handleDeleteOrder(deletingOrder.orderId)}>Delete order</Button>

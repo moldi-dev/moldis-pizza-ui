@@ -25,7 +25,7 @@ const SignInPage = () => {
     return (
         <>
             <div className="py-20">
-                <SignInForm />
+                <SignInForm/>
             </div>
         </>
     );

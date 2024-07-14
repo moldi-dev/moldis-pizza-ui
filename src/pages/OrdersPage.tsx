@@ -63,9 +63,11 @@ const OrdersPage = () => {
 
     return (
         <div>
-            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture} loggedInUserBasket={loggedInUserBasket}/>
-            <OrdersSection numberOfPages={numberOfPages} updatePage={updatePage} page={page}  loggedInUserOrders={loggedInUserOrders}/>
-            <Footer />
+            <Navbar loggedInUser={loggedInUser} loggedInUserProfilePicture={loggedInUserProfilePicture}
+                    loggedInUserBasket={loggedInUserBasket}/>
+            <OrdersSection numberOfPages={numberOfPages} updatePage={updatePage} page={page}
+                           loggedInUserOrders={loggedInUserOrders}/>
+            <Footer/>
         </div>
     );
 };

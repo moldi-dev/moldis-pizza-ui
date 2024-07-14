@@ -32,7 +32,7 @@ function convertBase64ToFile(base64String: string, filename: string): File {
     return new File([newBlob], filename);
 }
 
-const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }) => {
+const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({index, pizza}) => {
     const [initialPizzaImages, setInitialPizzaImages] = useState<string[]>([]);
 
     const [updatedPizzaImages, setUpdatedPizzaImages] = useState<string[]>([]);
@@ -72,15 +72,13 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
 
         try {
             const response = await axios.delete(`http://localhost:8080/api/v1/pizzas/id=${pizza.pizzaId}`, {
-                headers: { Authorization: `Bearer ${accessToken}` }
+                headers: {Authorization: `Bearer ${accessToken}`}
             })
 
             setIsDeleteDialogOpen(false);
 
             window.location.reload();
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
@@ -127,9 +125,7 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
                 if (imageFile) {
                     formData.append(`images`, imageFile);
                 }
-            }
-
-            catch (error) {
+            } catch (error) {
                 setErrorMessage(error);
 
                 setTimeout(() => {
@@ -151,14 +147,10 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
 
             window.location.reload();
             closeUpdateDialog();
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error.response && error.response.status == 400) {
                 setValidationErrors(error.response.data.data.validationErrors);
-            }
-
-            else if (error.response) {
+            } else if (error.response) {
                 setErrorMessage(error.response.data.message);
             }
 
@@ -171,7 +163,7 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
 
     useEffect(() => {
         async function fetchPizzaImages() {
-            const fetchedImages= new Array(pizza.images.length).fill('');
+            const fetchedImages = new Array(pizza.images.length).fill('');
             const fetchedNames = new Array(pizza.images.length).fill('');
 
             for (let index = 0; index < pizza.images.length; index++) {
@@ -198,12 +190,13 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
                     <DialogHeader>
                         <DialogTitle>Delete pizza</DialogTitle>
                         <DialogDescription>
-                            Are you sure that you want to delete the pizza '{pizza.name}'? This operation will also delete its
+                            Are you sure that you want to delete the pizza '{pizza.name}'? This operation will also
+                            delete its
                             associated reviews, orders and images. This operation cannot be undone!
                         </DialogDescription>
                     </DialogHeader>
                     {errorMessage && (
-                        <AlertDestructive description={errorMessage} title="Error" />
+                        <AlertDestructive description={errorMessage} title="Error"/>
                     )}
                     <DialogFooter>
                         <Button onClick={handleDeletePizza}>Delete pizza</Button>
@@ -225,7 +218,7 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
                         />
                     ))}
                     {errorMessage && (
-                        <AlertDestructive description={errorMessage} title="Error" />
+                        <AlertDestructive description={errorMessage} title="Error"/>
                     )}
                     <div className="grid gap-8">
                         <div>
@@ -241,7 +234,8 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
                                                 className="aspect-video object-cover rounded-md"
                                             />
                                             <div className="flex justify-end gap-2 mt-2">
-                                                <Button onClick={() => handleRemoveImage(index)} variant="ghost" size="icon" className="hover:bg-muted/50">
+                                                <Button onClick={() => handleRemoveImage(index)} variant="ghost"
+                                                        size="icon" className="hover:bg-muted/50">
                                                     <XIcon className="w-4 h-4"/>
                                                 </Button>
                                             </div>
@@ -257,15 +251,18 @@ const PizzaInAdminPanelCard: React.FC<PizzaInPanelCardProps> = ({ index, pizza }
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="name">Name</Label>
-                                <Input id="name" type="text" defaultValue={pizza.name} onChange={e => setName(e.target.value)}/>
+                                <Input id="name" type="text" defaultValue={pizza.name}
+                                       onChange={e => setName(e.target.value)}/>
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="ingredients">Ingredients</Label>
-                                <Input id="ingredients" defaultValue={pizza.ingredients} onChange={e => setIngredients(e.target.value)}/>
+                                <Input id="ingredients" defaultValue={pizza.ingredients}
+                                       onChange={e => setIngredients(e.target.value)}/>
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="price">Price</Label>
-                                <Input id="price" type="number" defaultValue={pizza.price} onChange={e => setPrice(Number(e.target.value))}/>
+                                <Input id="price" type="number" defaultValue={pizza.price}
+                                       onChange={e => setPrice(Number(e.target.value))}/>
                             </div>
                         </div>
                     </div>
